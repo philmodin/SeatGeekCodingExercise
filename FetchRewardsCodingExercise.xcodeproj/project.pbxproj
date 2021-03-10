@@ -13,6 +13,7 @@
 		86C6A4CB25F8683D009F363C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4C925F8683D009F363C /* Main.storyboard */; };
 		86C6A4CD25F8683E009F363C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CC25F8683E009F363C /* Assets.xcassets */; };
 		86C6A4D025F8683E009F363C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */; };
+		86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4DB25F86A47009F363C /* HomeTable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		86C6A4CC25F8683E009F363C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86C6A4CF25F8683E009F363C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		86C6A4D125F8683E009F363C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		86C6A4DB25F86A47009F363C /* HomeTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,9 +60,10 @@
 			children = (
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
 				86C6A4C525F8683D009F363C /* SceneDelegate.swift */,
+				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
 				86C6A4C725F8683D009F363C /* ViewController.swift */,
-				86C6A4C925F8683D009F363C /* Main.storyboard */,
 				86C6A4CC25F8683E009F363C /* Assets.xcassets */,
+				86C6A4C925F8683D009F363C /* Main.storyboard */,
 				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
 				86C6A4D125F8683E009F363C /* Info.plist */,
 			);
@@ -140,6 +143,7 @@
 				86C6A4C825F8683D009F363C /* ViewController.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
 				86C6A4C625F8683D009F363C /* SceneDelegate.swift in Sources */,
+				86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +293,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5X28646AN;
 				INFOPLIST_FILE = FetchRewardsCodingExercise/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -296,7 +301,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.FetchRewardsCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -308,6 +313,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5X28646AN;
 				INFOPLIST_FILE = FetchRewardsCodingExercise/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,7 +321,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.FetchRewardsCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
