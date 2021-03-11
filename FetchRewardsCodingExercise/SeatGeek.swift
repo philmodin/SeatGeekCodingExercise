@@ -26,7 +26,7 @@ struct Venue: Codable {
 }
 
 struct Performers: Codable {
-    var image: String
+    var image: String?
 }
 
 struct SeatGeek {
@@ -35,47 +35,56 @@ struct SeatGeek {
     static let dataFormat = "format=json&"
     static var clientID = "MjE1ODMxMzl8MTYxNTI2NTE3Mi4yMjE2MTE3"
     
-    static var urlString = "https://api.seatgeek.com/2/events?q=s&per_page=20&page=1&format=json&client_id=MjE1ODMxMzl8MTYxNTI2NTE3Mi4yMjE2MTE3"
     static let decoder = JSONDecoder()
 
-    static func parse(query: String? = nil, pageCursor: Int) -> Events? {
-        //print(urlString)
+    static func parse(query: String? = nil, pageCursor: Int = 1) -> Events? {
         var search = ""
-        if let q = query { search = "q=\(q)&" }
+        if let q = query {
+            let spaceToPlus = q.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
+            search = "q=\(spaceToPlus)&"
+        }
         let urlString = apiBase + search + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
-        //print(urlString)
+        print(urlString)
+        print("query: \(query ?? ""), search: \(search)")
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
-                print(data)
-                if let jsonEvents = try? decoder.decode(Events.self, from: data) {
-                    print("parse: done")
+                do {
+                    let jsonEvents = try decoder.decode(Events.self, from: data)
                     return jsonEvents
+                } catch {
+                    print(error)
                 }
             }
         }
         return nil
     }
     
-    static func dateFrom(rfc: String) -> Date? {
+    static func dateFrom(rfc: String?) -> Date? {
         let RFC3339DateFormatter = DateFormatter()
         RFC3339DateFormatter.locale = Locale(identifier: "en_US_POSIX")
         RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         RFC3339DateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        let date = RFC3339DateFormatter.date(from: rfc)
-        return date
+        if let date = RFC3339DateFormatter.date(from: rfc ?? "") {
+            return date
+        } else { return nil }
     }
     
-    static func stringDayFrom(date: Date) -> String {
+    static func stringDayFrom(date: Date?) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
         dateFormatter.timeStyle = .none
-        return dateFormatter.string(from: date)
+        if let day = date {
+            return dateFormatter.string(from: day)
+        } else { return "______ _____ _ ____" }
     }
     
-    static func stringTimeFrom(date: Date) -> String {
+    static func stringTimeFrom(date: Date?) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .short
-        return dateFormatter.string(from: date)
+        if let day = date {
+            return dateFormatter.string(from: day)
+        } else { return "____ __" }
+        
     }
 }

@@ -16,6 +16,7 @@
 		86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4DB25F86A47009F363C /* HomeTable.swift */; };
 		86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E125F873A6009F363C /* SeatGeek.swift */; };
 		86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* HomeCell.swift */; };
+		86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* ExtUIColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		86C6A4DB25F86A47009F363C /* HomeTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTable.swift; sourceTree = "<group>"; };
 		86C6A4E125F873A6009F363C /* SeatGeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeek.swift; sourceTree = "<group>"; };
 		86C6A4E625F8CEE4009F363C /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
+		86C6A4EF25F9A500009F363C /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
 				86C6A4C525F8683D009F363C /* SceneDelegate.swift */,
 				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
+				86C6A4EF25F9A500009F363C /* ExtUIColor.swift */,
 				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
 				86C6A4C725F8683D009F363C /* EventDetails.swift */,
 				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
@@ -149,6 +152,7 @@
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
 				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
+				86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */,
 				86C6A4C625F8683D009F363C /* SceneDelegate.swift in Sources */,
 				86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */,
 				86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */,
