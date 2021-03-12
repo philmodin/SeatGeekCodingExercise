@@ -9,6 +9,7 @@ import UIKit
 
 class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
 
+    let defaults = UserDefaults.standard
     var events: [Event] = []
     var eventsOriginal: [Event] = []
     var searchQuery = ""
@@ -33,11 +34,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         }
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        setNeedsStatusBarAppearanceUpdate()
-//    }
-    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -54,6 +50,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         let event = events[indexPath.row]
         cell.title.text = event.title
+        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { cell.favorite.image = UIImage(systemName: "heart.fill") }
         cell.location.text = event.venue.city + ", " + event.venue.state
         cell.time.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + "\n" + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
         cell.thumbnail.image = nil
@@ -167,14 +164,19 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     */
 
-    /*
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
+            destination.event = events[index.row]
+            destination.tableView = tableView
+            destination.index = index
+            destination.thumbnailImage = (tableView.cellForRow(at: index) as! HomeCell).thumbnail.image
+        }
     }
-    */
-
+    
 }
