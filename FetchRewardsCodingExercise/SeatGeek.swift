@@ -15,14 +15,14 @@ struct Event: Codable {
     var id: Int
     var datetime_utc: String
     var datetime_local: String
-    var venue: Venue
+    var venue: Venue?
     var performers: [Performers]
     var title: String
 }
 
 struct Venue: Codable {
-    var state: String
-    var city: String
+    var state: String?
+    var city: String?
 }
 
 struct Performers: Codable {
@@ -31,7 +31,8 @@ struct Performers: Codable {
 
 struct SeatGeek {
     static let apiBase = "https://api.seatgeek.com/2/events?"
-    static let resultsPerPage = 20
+    static let sorting = ""//"sort=datetime_local.desc&"
+    static let resultsPerPage = 10
     static let dataFormat = "format=json&"
     static var clientID = "MjE1ODMxMzl8MTYxNTI2NTE3Mi4yMjE2MTE3"
     
@@ -43,7 +44,7 @@ struct SeatGeek {
             let spaceToPlus = q.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
             search = "q=\(spaceToPlus)&"
         }
-        let urlString = apiBase + search + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
+        let urlString = apiBase + search + sorting + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
         print(urlString)
         print("query: \(query ?? ""), search: \(search)")
         if let url = URL(string: urlString) {

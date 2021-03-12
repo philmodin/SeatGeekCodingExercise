@@ -49,8 +49,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         let event = events[indexPath.row]
         cell.title.text = event.title
-        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { cell.favorite.image = UIImage(named: "heartFill") }
-        cell.location.text = event.venue.city + ", " + event.venue.state
+        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) {
+            cell.favorite.image = UIImage(named: "heartFill")
+        } else {
+            cell.favorite.image = nil
+        }
+        cell.location.text = event.venue?.city ?? "" + ", " + (event.venue?.state ?? "")
         cell.time.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + "\n" + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
         cell.thumbnail.image = nil
         DispatchQueue.global().async {
@@ -121,42 +125,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             }
         }
     }
-    
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
 
     // MARK: - Navigation
 
