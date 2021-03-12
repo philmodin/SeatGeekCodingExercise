@@ -50,7 +50,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         let event = events[indexPath.row]
         cell.title.text = event.title
-        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { cell.favorite.image = UIImage(systemName: "heart.fill") }
+        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { cell.favorite.image = UIImage(named: "heartFill") }
         cell.location.text = event.venue.city + ", " + event.venue.state
         cell.time.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + "\n" + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
         cell.thumbnail.image = nil
@@ -77,15 +77,15 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     func configureNavBar() {
-        let navStandardAppearance = UINavigationBarAppearance()
-        navStandardAppearance.configureWithOpaqueBackground()
-        navStandardAppearance.backgroundColor = .grayBlue
-        navigationController?.navigationBar.standardAppearance = navStandardAppearance
-        
-        let navScrollAppearance = UINavigationBarAppearance()
-        navScrollAppearance.configureWithOpaqueBackground()
-        navScrollAppearance.backgroundColor = .white
-        navigationController?.navigationBar.scrollEdgeAppearance = navScrollAppearance
+//        let navStandardAppearance = UINavigationBarAppearance()
+//        navStandardAppearance.configureWithOpaqueBackground()
+//        navStandardAppearance.backgroundColor = .grayBlue
+//        navigationController?.navigationBar.standardAppearance = navStandardAppearance
+//
+//        let navScrollAppearance = UINavigationBarAppearance()
+//        navScrollAppearance.configureWithOpaqueBackground()
+//        navScrollAppearance.backgroundColor = .white
+//        navigationController?.navigationBar.scrollEdgeAppearance = navScrollAppearance
     }
     
     func configureSearchBar() {
@@ -95,9 +95,9 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.tintColor = .white
-        searchController.searchBar.searchTextField.textColor = .white
+//        searchController.searchBar.searchTextField.textColor = .white
 //        searchController.searchBar.barStyle = .black
-        searchController.searchBar.searchTextField.leftView?.tintColor = .white
+//        searchController.searchBar.searchTextField.leftView?.tintColor = .white
 //        searchController.searchBar.showsCancelButton = true
         searchController.hidesNavigationBarDuringPresentation = false
 //        definesPresentationContext = true

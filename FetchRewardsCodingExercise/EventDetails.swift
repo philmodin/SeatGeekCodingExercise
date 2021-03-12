@@ -65,11 +65,11 @@ class EventDetails: UIViewController {
     
     func configureFavButton() {
         if isFavorite {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "heart.fill"), style: .plain, target: self, action: #selector(toggleFav))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "heartFill"), style: .plain, target: self, action: #selector(toggleFav))
             navigationItem.rightBarButtonItem?.tintColor = .systemPink
 
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "heart"), style: .plain, target: self, action: #selector(toggleFav))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "heartFill"), style: .plain, target: self, action: #selector(toggleFav))
             navigationItem.rightBarButtonItem?.tintColor = .white
         }
     }
