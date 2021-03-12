@@ -18,7 +18,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     override func viewDidLoad() {
         super.viewDidLoad()
         generatePlaceholders()
-        configureNavBar()
         configureSearchBar()
         DispatchQueue.global().async {
             if let results = SeatGeek.parse()?.events {
@@ -76,31 +75,25 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         self.tableView.layoutIfNeeded()
     }
     
-    func configureNavBar() {
-//        let navStandardAppearance = UINavigationBarAppearance()
-//        navStandardAppearance.configureWithOpaqueBackground()
-//        navStandardAppearance.backgroundColor = .grayBlue
-//        navigationController?.navigationBar.standardAppearance = navStandardAppearance
-//
-//        let navScrollAppearance = UINavigationBarAppearance()
-//        navScrollAppearance.configureWithOpaqueBackground()
-//        navScrollAppearance.backgroundColor = .white
-//        navigationController?.navigationBar.scrollEdgeAppearance = navScrollAppearance
-    }
-    
     func configureSearchBar() {
         searchController = UISearchController(searchResultsController: nil)
         searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.barStyle = .black
         searchController.searchBar.tintColor = .white
 //        searchController.searchBar.searchTextField.textColor = .white
+        searchController.searchBar.barTintColor = .white
 //        searchController.searchBar.barStyle = .black
-//        searchController.searchBar.searchTextField.leftView?.tintColor = .white
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.searchTextField.leftView?.tintColor = .white
+            searchController.searchBar.searchTextField.textColor = .white
+        } else {
+            // Fallback on earlier versions
+        }
 //        searchController.searchBar.showsCancelButton = true
         searchController.hidesNavigationBarDuringPresentation = false
-//        definesPresentationContext = true
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.titleView = searchController.searchBar
     }

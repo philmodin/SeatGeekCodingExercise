@@ -16,6 +16,7 @@ class EventDetails: UIViewController {
     var event: Event!
     var thumbnailImage: UIImage?
     var isFavorite = false
+    let favButton = UIButton(type: .custom)
     
     @IBOutlet var thumbnail: UIImageView! {
         didSet {
@@ -41,19 +42,16 @@ class EventDetails: UIViewController {
         place.text = event.venue.city + ", " + event.venue.state
     }
     
-    func checkFav() {
-        if let favs = defaults.object(forKey: "favs") as? [Int] {
-            if favs.contains(event.id) { isFavorite = true } else { isFavorite = false }
-        }
-    }
-    
     func setFav() {
         if var favsArray = defaults.object(forKey: "favs") as? [Int] {
-//            var favsSet: Set<Int> = Set(favsArray.map { $0 })
             var favsSet = Set(favsArray)
             if isFavorite {
+                favButton.setImage(UIImage(named:"heartFill"), for: .normal)
+                favButton.tintColor = .systemPink
                 favsSet.insert(event.id)
             } else {
+                favButton.setImage(UIImage(named:"heartOutline"), for: .normal)
+                favButton.tintColor = .white
                 favsSet.remove(event.id)
             }
             favsArray = Array(favsSet)
@@ -64,21 +62,23 @@ class EventDetails: UIViewController {
     }
     
     func configureFavButton() {
-        if isFavorite {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "heartFill"), style: .plain, target: self, action: #selector(toggleFav))
-            navigationItem.rightBarButtonItem?.tintColor = .systemPink
+        favButton.frame = CGRect(x: 0.0, y: 0.0, width: 24, height: 24)
+        favButton.setImage(UIImage(named:"heartOutline"), for: .normal)
+        favButton.addTarget(self, action: #selector(toggleFav), for: .touchUpInside)
 
-        } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "heartFill"), style: .plain, target: self, action: #selector(toggleFav))
-            navigationItem.rightBarButtonItem?.tintColor = .white
-        }
+        let menuBarItem = UIBarButtonItem(customView: favButton)
+        let currWidth = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24)
+        currWidth?.isActive = true
+        let currHeight = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24)
+        currHeight?.isActive = true
+        self.navigationItem.rightBarButtonItem = menuBarItem
+        setFav()
     }
     
     @objc func toggleFav() {
         print("toggle fav")
         isFavorite.toggle()
         setFav()
-        configureFavButton()
         tableView.reloadRows(at: [index], with: .automatic)
     }
 }
