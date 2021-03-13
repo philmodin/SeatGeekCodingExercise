@@ -9,6 +9,13 @@ import Foundation
 
 struct Events: Codable {
     var events: [Event]
+    var meta: Meta
+}
+
+struct Meta: Codable {
+    var total: Int
+    var page: Int
+    var per_page: Int
 }
 
 struct Event: Codable {

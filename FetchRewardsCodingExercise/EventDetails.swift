@@ -39,7 +39,7 @@ class EventDetails: UIViewController {
         if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { isFavorite = true }
         thumbnail.image = thumbnailImage
         dateTime.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
-        place.text = event.venue?.city ?? "" + ", " + (event.venue?.state ?? "")
+        place.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
     }
     
     func setFav() {
