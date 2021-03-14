@@ -20,17 +20,17 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="eventCell" id="4sL-qu-44N" customClass="HomeCell" customModule="FetchRewardsCodingExercise" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="414" height="148.5"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="168"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4sL-qu-44N" id="yUL-Iq-WNj">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="148.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="168"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="BOe-oL-jW5" userLabel="CellStack">
-                                            <rect key="frame" x="24" y="16" width="374" height="116.5"/>
+                                            <rect key="frame" x="24" y="16" width="374" height="136"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8QY-Ta-88D" userLabel="LeftStack">
-                                                    <rect key="frame" x="0.0" y="0.0" width="85" height="116.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="85" height="136"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yF2-tg-V8d">
                                                             <rect key="frame" x="0.0" y="0.0" width="85" height="85"/>
@@ -61,13 +61,13 @@
                                                             </constraints>
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Jz-v6-gTV" userLabel="spacer">
-                                                            <rect key="frame" x="0.0" y="85" width="85" height="31.5"/>
+                                                            <rect key="frame" x="0.0" y="85" width="85" height="51"/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </view>
                                                     </subviews>
                                                 </stackView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="XPe-nl-xz6" userLabel="RightStack">
-                                                    <rect key="frame" x="101" y="0.0" width="273" height="116.5"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="XPe-nl-xz6" userLabel="RightStack">
+                                                    <rect key="frame" x="101" y="0.0" width="273" height="136"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ACC Men's Basketball Tournament - Session 2 (#11 Notre Dame vs #14 Wake Forest)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HKV-At-Oqd" userLabel="Title">
                                                             <rect key="frame" x="0.0" y="0.0" width="273" height="64.5"/>
@@ -82,7 +82,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2021-03-09T19:00:00" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sje-US-o14" userLabel="Time">
-                                                            <rect key="frame" x="0.0" y="100.5" width="273" height="16"/>
+                                                            <rect key="frame" x="0.0" y="100.5" width="273" height="35.5"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>

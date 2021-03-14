@@ -7,12 +7,14 @@
 
 import UIKit
 
-class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
-
+class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {    
+    //TODO: prevent scrolling past 1 unloaded row
+    //TODO: loading indicator in place of thumbnail
+    //TODO: placeholder thumbnail (app icon) when one isn't available
+    //TODO: check for internet connection
     let defaults = UserDefaults.standard
     var events: [Event] = []
     var eventsTotal = 0
-    var eventsPlaceholders: [Event] = []
     var searchQuery = ""
     var searchController : UISearchController!
     var shouldCancelLoading = false
@@ -23,9 +25,13 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.prefetchDataSource = self
-        generatePlaceholders()
         configureSearchBar()
         loadEvents()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("viewDidAppear")
     }
     
     // MARK: - Table view data source
@@ -89,10 +95,10 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             nextPageCursor = 1
             events = []
             eventsTotal = 0
-            shouldCancelLoading = true // TODO: this cancels only one in queue. The other still operate and potentially crash the table
-            // idea, set priority. Each time =+ priority. If cancel == true, then all under current priority cancel themselves. When non cancel finishes laoding, it resets the priority
+            shouldCancelLoading = true
             loadingPriority += 1
             isLoading = false
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             tableView.reloadData()
             loadEvents(priority: loadingPriority)
         }
@@ -143,20 +149,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         navigationItem.titleView = searchController.searchBar
     }
     
-    private func generatePlaceholders() {
-        let venueHolder = Venue(state: "__", city: "_______")
-        let perforHolder = Performers(image: "__")
-        let eventHolder = Event(id: 1, datetime_utc: "", datetime_local: "", venue: venueHolder, performers: [perforHolder], title: "_____ ___ __________ _______ _____ ___________")
-
-        eventsPlaceholders.append(eventHolder)
-        eventsPlaceholders.append(eventHolder)
-        eventsPlaceholders.append(eventHolder)
-        eventsPlaceholders.append(eventHolder)
-        eventsPlaceholders.append(eventHolder)
-//        self.tableView.setNeedsLayout()
-//        self.tableView.layoutIfNeeded()
-    }
-    
     private func loadEvents(priority: Int = 0) {
         if self.isLoading {
             print("still loading")
@@ -186,6 +178,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 }
                             } else {
                                 self.events = results.events
+                                print("loadEvents.tableView.reloadData")
                                 self.tableView.reloadData()
                                 self.tableView.setNeedsLayout()
                                 self.tableView.layoutIfNeeded()
