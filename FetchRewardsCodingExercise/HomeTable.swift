@@ -5,15 +5,16 @@
 //  Created by endOfLine on 3/9/21.
 //
 
+//TODO: prevent scrolling past 1 unloaded row
+//TODO: loading indicator in place of thumbnail
+//TODO: check for internet connection
 import UIKit
 
-class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {    
-    //TODO: prevent scrolling past 1 unloaded row
-    //TODO: loading indicator in place of thumbnail
-    //TODO: placeholder thumbnail (app icon) when one isn't available
-    //TODO: check for internet connection
+class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
+    
     let defaults = UserDefaults.standard
     var events: [Event] = []
+    var thumbnails: [UIImage?] = []
     var eventsTotal = 0
     var searchQuery = ""
     var searchController : UISearchController!
@@ -26,7 +27,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         super.viewDidLoad()
         tableView.prefetchDataSource = self
         configureSearchBar()
-        loadEvents()
+        loadEventsInitial()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -58,6 +59,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             cell.location.text = "__ _______"
             cell.time.text = "______ _____ _ ____\n____ __"
             cell.thumbnail.image = nil
+            cell.activityIndicator.stopAnimating()
         } else {
             let event = events[indexPath.row]
             cell.title.text = event.title
@@ -68,12 +70,22 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             }
             cell.location.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
             cell.time.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + "\n" + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
-            cell.thumbnail.image = nil
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: URL(string: (event.performers.first?.image ?? "_"))!) {
-                    DispatchQueue.main.async {
-                        if (self.tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = UIImage(data: data) }
-//                        cell.thumbnail.image = UIImage(data: data)
+            if let thumbnail = thumbnails[indexPath.row] {
+                cell.thumbnail.image = thumbnail
+            } else {
+                cell.thumbnail.image = nil
+                cell.activityIndicator.startAnimating()
+                let thumbnailPriority = loadingPriority
+                DispatchQueue.global().async {
+                    if let data = try? Data(contentsOf: URL(string: (event.performers.first?.image ?? "_"))!) {
+                        if thumbnailPriority == self.loadingPriority {
+                            DispatchQueue.main.async {
+                                self.thumbnails.remove(at: indexPath.row)
+                                self.thumbnails.insert(UIImage(data: data), at: indexPath.row)
+                                cell.activityIndicator.stopAnimating()
+                                if (self.tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = UIImage(data: data) }
+                            }
+                        }
                     }
                 }
             }
@@ -153,19 +165,14 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         if self.isLoading {
             print("still loading")
         } else {
-//            shouldCancelLoading = false
             DispatchQueue.global().async {
                 self.isLoading = true
                 if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
                     if self.shouldCancelLoading && priority < self.loadingPriority {
-//                        self.shouldCancelLoading = false
                         print("cancelled loading")
                         return
                     } else {
                         DispatchQueue.main.async {
-//                            self.isLoading = false
-//                            self.shouldCancelLoading = false
-                            self.eventsTotal = results.meta.total
                             self.nextPageCursor = results.meta.page + 1
 
                             if results.meta.page > 1 {
@@ -178,10 +185,9 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 }
                             } else {
                                 self.events = results.events
+                                self.eventsTotal = results.meta.total
+                                self.thumbnails = [UIImage?](repeating: nil, count: self.eventsTotal)
                                 print("loadEvents.tableView.reloadData")
-                                self.tableView.reloadData()
-                                self.tableView.setNeedsLayout()
-                                self.tableView.layoutIfNeeded()
                                 self.tableView.reloadData()
                             }
                             self.shouldCancelLoading = false
@@ -191,6 +197,17 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                 self.isLoading = false
             }
         }
+    }
+    
+    private func loadEventsInitial() {
+        print("loadEventsInitial start")
+        if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
+            eventsTotal = results.meta.total
+            nextPageCursor = results.meta.page + 1
+            events = results.events
+            thumbnails = [UIImage?](repeating: nil, count: eventsTotal)
+        } else { print("json error") }
+        print("loadEventsInitial finished")
     }
     
     private func isLoadingCell(for indexPath: IndexPath) -> Bool {

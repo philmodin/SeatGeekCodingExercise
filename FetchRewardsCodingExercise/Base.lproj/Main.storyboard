@@ -35,8 +35,13 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yF2-tg-V8d">
                                                             <rect key="frame" x="0.0" y="0.0" width="85" height="85"/>
                                                             <subviews>
+                                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="PDD-Ji-Sxj">
+                                                                    <rect key="frame" x="24" y="24" width="37" height="37"/>
+                                                                    <color key="color" red="0.2666666667" green="0.30980392159999998" blue="0.38823529410000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </activityIndicatorView>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1l4-z4-Mfx" userLabel="thumbnail">
                                                                     <rect key="frame" x="0.0" y="1" width="85" height="82.5"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <color key="tintColor" red="0.21321359200000001" green="0.23192873319999999" blue="0.37214652939999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <imageReference key="image" image="photo.fill" catalog="system" renderingMode="template"/>
                                                                 </imageView>
@@ -49,11 +54,13 @@
                                                                     </constraints>
                                                                 </imageView>
                                                             </subviews>
-                                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
                                                                 <constraint firstItem="ilN-gU-nFt" firstAttribute="top" secondItem="yF2-tg-V8d" secondAttribute="top" constant="-6" id="0vp-Fp-skM"/>
                                                                 <constraint firstItem="1l4-z4-Mfx" firstAttribute="top" secondItem="yF2-tg-V8d" secondAttribute="top" id="2Bv-pa-sdG"/>
                                                                 <constraint firstAttribute="bottom" secondItem="1l4-z4-Mfx" secondAttribute="bottom" id="2fy-hs-lH3"/>
+                                                                <constraint firstItem="PDD-Ji-Sxj" firstAttribute="centerY" secondItem="yF2-tg-V8d" secondAttribute="centerY" id="C7r-aY-A7c"/>
+                                                                <constraint firstItem="PDD-Ji-Sxj" firstAttribute="centerX" secondItem="yF2-tg-V8d" secondAttribute="centerX" id="Dtn-kF-DGb"/>
                                                                 <constraint firstAttribute="trailing" secondItem="1l4-z4-Mfx" secondAttribute="trailing" id="Oo1-pS-VXg"/>
                                                                 <constraint firstItem="ilN-gU-nFt" firstAttribute="leading" secondItem="yF2-tg-V8d" secondAttribute="leading" constant="-12" id="TcQ-Vd-Jbk"/>
                                                                 <constraint firstItem="1l4-z4-Mfx" firstAttribute="leading" secondItem="yF2-tg-V8d" secondAttribute="leading" id="gje-QN-MuS"/>
@@ -101,6 +108,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="activityIndicator" destination="PDD-Ji-Sxj" id="xff-4Y-aXF"/>
                                     <outlet property="favorite" destination="ilN-gU-nFt" id="oGd-1A-rjb"/>
                                     <outlet property="location" destination="C6Y-mx-08m" id="HZc-ec-FZW"/>
                                     <outlet property="thumbnail" destination="1l4-z4-Mfx" id="AQx-HD-bUJ"/>
