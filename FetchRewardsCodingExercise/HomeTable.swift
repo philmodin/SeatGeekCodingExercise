@@ -12,11 +12,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     let defaults = UserDefaults.standard
     var events: [Event] = []
     var eventsTotal = 0
-    var eventsOriginal: [Event] = []
-//    var searchQuery = ""
-    var searchQuery: String? = nil
+    var eventsPlaceholders: [Event] = []
+    var searchQuery = ""
     var searchController : UISearchController!
+    var shouldCancelLoading = false
     var isLoading = false
+    var loadingPriority = 0
     var nextPageCursor = 1
     
     override func viewDidLoad() {
@@ -35,8 +36,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return eventsTotal
+        if eventsTotal > 1 {
+            return eventsTotal
+        } else {
+            return 1
+        }
+        
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -44,7 +49,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         if isLoadingCell(for: indexPath) {
             cell.title.text = "_____ ___ __________ _______ _____ ___________"
             cell.favorite.image = nil
-            cell.location.text = "__, _______"
+            cell.location.text = "__ _______"
             cell.time.text = "______ _____ _ ____\n____ __"
             cell.thumbnail.image = nil
         } else {
@@ -61,7 +66,8 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             DispatchQueue.global().async {
                 if let data = try? Data(contentsOf: URL(string: (event.performers.first?.image ?? "_"))!) {
                     DispatchQueue.main.async {
-                        cell.thumbnail.image = UIImage(data: data)
+                        if (self.tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = UIImage(data: data) }
+//                        cell.thumbnail.image = UIImage(data: data)
                     }
                 }
             }
@@ -71,16 +77,24 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths.contains(where: isLoadingCell) {
-            loadEvents(query: searchQuery)
+            loadEvents()
         }
     }
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        print(text)
+        print("updateSearchResults: " + text)
         if text != searchQuery {
             searchQuery = text
-            loadEvents(query: text)
+            nextPageCursor = 1
+            events = []
+            eventsTotal = 0
+            shouldCancelLoading = true // TODO: this cancels only one in queue. The other still operate and potentially crash the table
+            // idea, set priority. Each time =+ priority. If cancel == true, then all under current priority cancel themselves. When non cancel finishes laoding, it resets the priority
+            loadingPriority += 1
+            isLoading = false
+            tableView.reloadData()
+            loadEvents(priority: loadingPriority)
         }
     }
 
@@ -133,39 +147,52 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         let venueHolder = Venue(state: "__", city: "_______")
         let perforHolder = Performers(image: "__")
         let eventHolder = Event(id: 1, datetime_utc: "", datetime_local: "", venue: venueHolder, performers: [perforHolder], title: "_____ ___ __________ _______ _____ ___________")
-        events.append(eventHolder)
-        events.append(eventHolder)
-        events.append(eventHolder)
-        events.append(eventHolder)
+
+        eventsPlaceholders.append(eventHolder)
+        eventsPlaceholders.append(eventHolder)
+        eventsPlaceholders.append(eventHolder)
+        eventsPlaceholders.append(eventHolder)
+        eventsPlaceholders.append(eventHolder)
 //        self.tableView.setNeedsLayout()
 //        self.tableView.layoutIfNeeded()
     }
     
-    private func loadEvents(query: String? = nil) {
+    private func loadEvents(priority: Int = 0) {
         if self.isLoading {
             print("still loading")
         } else {
+//            shouldCancelLoading = false
             DispatchQueue.global().async {
                 self.isLoading = true
-                if let results = SeatGeek.parse(query: query, pageCursor: self.nextPageCursor) {
-                    DispatchQueue.main.async {
-//                        self.isLoading = false
-                        self.eventsTotal = results.meta.total
-                        self.nextPageCursor = results.meta.page + 1
+                if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
+                    if self.shouldCancelLoading && priority < self.loadingPriority {
+//                        self.shouldCancelLoading = false
+                        print("cancelled loading")
+                        return
+                    } else {
+                        DispatchQueue.main.async {
+//                            self.isLoading = false
+//                            self.shouldCancelLoading = false
+                            self.eventsTotal = results.meta.total
+                            self.nextPageCursor = results.meta.page + 1
 
-                        if results.meta.page > 1 {
-                            self.events.append(contentsOf: results.events)
-                            let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
-                            let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
-                            self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .none)
-                        } else {
-                            self.events = results.events
-                            self.tableView.reloadData()
+                            if results.meta.page > 1 {
+                                self.events.append(contentsOf: results.events)
+                                let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
+                                let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
+                                if reloadTheseIndexPaths.count > 0 {
+                                    print("Reloading: \(reloadTheseIndexPaths)")
+                                    self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
+                                }
+                            } else {
+                                self.events = results.events
+                                self.tableView.reloadData()
+                                self.tableView.setNeedsLayout()
+                                self.tableView.layoutIfNeeded()
+                                self.tableView.reloadData()
+                            }
+                            self.shouldCancelLoading = false
                         }
-    //                    self.tableView.reloadData()
-    //                    self.tableView.setNeedsLayout()
-    //                    self.tableView.layoutIfNeeded()
-    //                    self.tableView.reloadData()
                     }
                 } else { print("json error") }
                 self.isLoading = false
