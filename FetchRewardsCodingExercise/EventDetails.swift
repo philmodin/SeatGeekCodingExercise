@@ -63,6 +63,7 @@ class EventDetails: UIViewController {
     
     func configureFavButton() {
         favButton.frame = CGRect(x: 0.0, y: 0.0, width: 24, height: 24)
+        favButton.imageView?.contentMode = .scaleAspectFit
         favButton.setImage(UIImage(named:"heartOutline"), for: .normal)
         favButton.addTarget(self, action: #selector(toggleFav), for: .touchUpInside)
 

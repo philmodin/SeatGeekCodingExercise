@@ -5,9 +5,13 @@
 //  Created by endOfLine on 3/9/21.
 //
 
+//TODO: UILock when scrolling far down on poor connection then tapping top bar to skip to top
+    //lots of NSURLConnection finished with error - code -1001
 //TODO: prevent scrolling past 1 unloaded row
-//TODO: loading indicator in place of thumbnail
 //TODO: check for internet connection
+//TODO: placeholder image when none was provided
+//TODO: end of results row - if row == eventsTotal, show EndOfResultsRow
+
 import UIKit
 
 class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
@@ -35,7 +39,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         print("viewDidAppear")
     }
     
-    // MARK: - Table view data source
+    // MARK: - Table view & data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -82,10 +86,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                             DispatchQueue.main.async {
                                 self.thumbnails.remove(at: indexPath.row)
                                 self.thumbnails.insert(UIImage(data: data), at: indexPath.row)
-                                cell.activityIndicator.stopAnimating()
+                                //cell.activityIndicator.stopAnimating()
                                 if (self.tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = UIImage(data: data) }
                             }
                         }
+                    } else {
+                        // TODO: placeholder image when none was provided
                     }
                 }
             }
@@ -214,7 +220,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         return indexPath.row >= events.count
     }
     
-    func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
+    private func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
         let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows ?? []
         let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
         return Array(indexPathsIntersection)
