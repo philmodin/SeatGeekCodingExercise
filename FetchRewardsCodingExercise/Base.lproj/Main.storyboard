@@ -142,20 +142,22 @@
                                 <rect key="frame" x="16" y="104" width="382" height="742"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bHx-Zp-Mfh">
-                                        <rect key="frame" x="169.5" y="68" width="43.5" height="20.5"/>
+                                        <rect key="frame" x="169.5" y="398" width="43.5" height="20.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qW5-6E-kpm">
-                                        <rect key="frame" x="170.5" y="104.5" width="41.5" height="20.5"/>
+                                        <rect key="frame" x="170.5" y="434.5" width="41.5" height="20.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="kyU-NX-W0p">
-                                        <rect key="frame" x="176.5" y="15" width="29.5" height="22"/>
-                                        <imageReference key="image" image="photo" catalog="system" symbolScale="large"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="kyU-NX-W0p">
+                                        <rect key="frame" x="16" y="16" width="350" height="350"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="350" id="VXL-g6-lJs"/>
+                                        </constraints>
                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
                                     </imageView>
                                 </subviews>
@@ -163,10 +165,9 @@
                                 <constraints>
                                     <constraint firstItem="bHx-Zp-Mfh" firstAttribute="centerX" secondItem="ocQ-0J-wft" secondAttribute="centerX" id="Axa-xj-Erg"/>
                                     <constraint firstItem="qW5-6E-kpm" firstAttribute="top" secondItem="bHx-Zp-Mfh" secondAttribute="bottom" constant="16" id="Dz6-51-LFy"/>
-                                    <constraint firstItem="kyU-NX-W0p" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ocQ-0J-wft" secondAttribute="leading" id="Foe-Bm-YSH"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="kyU-NX-W0p" secondAttribute="trailing" id="J4a-7T-ryU"/>
+                                    <constraint firstItem="kyU-NX-W0p" firstAttribute="leading" secondItem="ocQ-0J-wft" secondAttribute="leading" constant="16" id="Foe-Bm-YSH"/>
+                                    <constraint firstAttribute="trailing" secondItem="kyU-NX-W0p" secondAttribute="trailing" constant="16" id="J4a-7T-ryU"/>
                                     <constraint firstItem="bHx-Zp-Mfh" firstAttribute="top" secondItem="kyU-NX-W0p" secondAttribute="bottom" constant="32" id="bxN-jm-Cut"/>
-                                    <constraint firstItem="kyU-NX-W0p" firstAttribute="centerX" secondItem="ocQ-0J-wft" secondAttribute="centerX" id="diH-Nl-5mH"/>
                                     <constraint firstItem="qW5-6E-kpm" firstAttribute="centerX" secondItem="ocQ-0J-wft" secondAttribute="centerX" id="hPI-qA-AZ9"/>
                                     <constraint firstItem="kyU-NX-W0p" firstAttribute="top" secondItem="ocQ-0J-wft" secondAttribute="top" constant="16" id="vg9-so-a2l"/>
                                 </constraints>
@@ -191,6 +192,7 @@
                         <outlet property="dateTime" destination="bHx-Zp-Mfh" id="evr-hq-4Xh"/>
                         <outlet property="place" destination="qW5-6E-kpm" id="6RO-fc-2hM"/>
                         <outlet property="thumbnail" destination="kyU-NX-W0p" id="Pg8-bw-FM5"/>
+                        <outlet property="thumbnailHeight" destination="VXL-g6-lJs" id="Zlm-zC-wX6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -230,7 +232,7 @@
     </scenes>
     <resources>
         <image name="heart" catalog="system" width="128" height="109"/>
-        <image name="photo" catalog="system" width="128" height="93"/>
+        <image name="icon" width="1024" height="1024"/>
         <image name="photo.fill" catalog="system" width="128" height="93"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

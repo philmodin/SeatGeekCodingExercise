@@ -14,10 +14,11 @@ class EventDetails: UIViewController {
     weak var tableView: UITableView!
     var index: IndexPath!
     var event: Event!
-    var thumbnailImage: UIImage?
+    var image: UIImage!
     var isFavorite = false
     let favButton = UIButton(type: .custom)
     
+    @IBOutlet var thumbnailHeight: NSLayoutConstraint!
     @IBOutlet var thumbnail: UIImageView! {
         didSet {
             thumbnail.layer.cornerRadius = 16
@@ -29,7 +30,6 @@ class EventDetails: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //checkFav()
         assignProperties()
         configureFavButton()
     }
@@ -37,7 +37,13 @@ class EventDetails: UIViewController {
     func assignProperties() {
         title = event.title
         if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { isFavorite = true }
-        thumbnail.image = thumbnailImage
+        
+        view.layoutIfNeeded()
+        thumbnail.image = image
+        let imageRatio = image.size.width / image.size.height
+        let height = thumbnail.frame.width / imageRatio
+        thumbnailHeight.constant = height
+        
         dateTime.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
         place.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
     }

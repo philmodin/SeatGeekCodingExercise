@@ -9,8 +9,8 @@
     //lots of NSURLConnection finished with error - code -1001
 //TODO: prevent scrolling past 1 unloaded row
 //TODO: check for internet connection
-//TODO: placeholder image when none was provided
 //TODO: end of results row - if row == eventsTotal, show EndOfResultsRow
+//TODO: prevent selection of unloaded rows - otherwise crashes
 
 import UIKit
 
@@ -63,7 +63,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             cell.location.text = "__ _______"
             cell.time.text = "______ _____ _ ____\n____ __"
             cell.thumbnail.image = nil
-            cell.activityIndicator.stopAnimating()
+            cell.activityIndicator.startAnimating()
         } else {
             let event = events[indexPath.row]
             cell.title.text = event.title
@@ -80,18 +80,22 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                 cell.thumbnail.image = nil
                 cell.activityIndicator.startAnimating()
                 let thumbnailPriority = loadingPriority
-                DispatchQueue.global().async {
+                DispatchQueue.global().async { [self] in
                     if let data = try? Data(contentsOf: URL(string: (event.performers.first?.image ?? "_"))!) {
                         if thumbnailPriority == self.loadingPriority {
                             DispatchQueue.main.async {
-                                self.thumbnails.remove(at: indexPath.row)
-                                self.thumbnails.insert(UIImage(data: data), at: indexPath.row)
-                                //cell.activityIndicator.stopAnimating()
-                                if (self.tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = UIImage(data: data) }
+                                thumbnails.remove(at: indexPath.row)
+                                thumbnails.insert(UIImage(data: data), at: indexPath.row)
+                                cell.activityIndicator.stopAnimating()
+                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = thumbnails[indexPath.row] }
                             }
                         }
                     } else {
-                        // TODO: placeholder image when none was provided
+                        DispatchQueue.main.async {
+                            thumbnails.remove(at: indexPath.row)
+                            thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
+                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = thumbnails[indexPath.row] }
+                        }
                     }
                 }
             }
@@ -132,7 +136,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.thumbnailImage = (tableView.cellForRow(at: index) as! HomeCell).thumbnail.image
+            destination.image = thumbnails[index.row]
         }
     }
     
