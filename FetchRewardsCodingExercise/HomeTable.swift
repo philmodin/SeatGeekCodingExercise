@@ -9,7 +9,6 @@
     //lots of NSURLConnection finished with error - code -1001
 //TODO: prevent scrolling past 1 unloaded row
 //TODO: check for internet connection
-//TODO: end of results row - if row == eventsTotal, show EndOfResultsRow
 //TODO: prevent selection of unloaded rows - otherwise crashes
 
 import UIKit
@@ -57,7 +56,14 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
-        if isLoadingCell(for: indexPath) {
+        if !isLoading && eventsTotal < 1 {
+            cell.title.text = "\n0 events"
+            cell.favorite.image = nil
+            cell.location.text = ""
+            cell.time.text = ""
+            cell.thumbnail.image = nil
+            cell.activityIndicator.stopAnimating()
+        } else if isLoadingCell(for: indexPath) {
             cell.title.text = "_____ ___ __________ _______ _____ ___________"
             cell.favorite.image = nil
             cell.location.text = "__ _______"
@@ -175,8 +181,9 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         if self.isLoading {
             print("still loading")
         } else {
+            self.isLoading = true
             DispatchQueue.global().async {
-                self.isLoading = true
+                //self.isLoading = true
                 if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
                     if self.shouldCancelLoading && priority < self.loadingPriority {
                         print("cancelled loading")
@@ -190,20 +197,18 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
                                 let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
                                 if reloadTheseIndexPaths.count > 0 {
-                                    print("Reloading: \(reloadTheseIndexPaths)")
                                     self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
                                 }
                             } else {
                                 self.events = results.events
                                 self.eventsTotal = results.meta.total
                                 self.thumbnails = [UIImage?](repeating: nil, count: self.eventsTotal)
-                                print("loadEvents.tableView.reloadData")
                                 self.tableView.reloadData()
                             }
                             self.shouldCancelLoading = false
                         }
                     }
-                } else { print("json error") }
+                } else { print("load error") }
                 self.isLoading = false
             }
         }
@@ -216,7 +221,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             nextPageCursor = results.meta.page + 1
             events = results.events
             thumbnails = [UIImage?](repeating: nil, count: eventsTotal)
-        } else { print("json error") }
+        } else { print("initial load error") }
         print("loadEventsInitial finished")
     }
     
