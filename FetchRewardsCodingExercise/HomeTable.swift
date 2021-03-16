@@ -9,7 +9,6 @@
     //lots of NSURLConnection finished with error - code -1001
 //TODO: prevent scrolling past 1 unloaded row
 //TODO: check for internet connection
-//TODO: prevent selection of unloaded rows - otherwise crashes
 
 import UIKit
 
@@ -35,7 +34,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("viewDidAppear")
+        //print("viewDidAppear")
     }
     
     // MARK: - Table view & data source
@@ -56,6 +55,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
+        cell.selectionStyle = .none
         if !isLoading && eventsTotal < 1 {
             cell.title.text = "\n0 events"
             cell.favorite.image = nil
@@ -93,14 +93,20 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 thumbnails.remove(at: indexPath.row)
                                 thumbnails.insert(UIImage(data: data), at: indexPath.row)
                                 cell.activityIndicator.stopAnimating()
-                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = thumbnails[indexPath.row] }
+                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
+                                    cell.thumbnail.image = thumbnails[indexPath.row]
+                                    cell.selectionStyle = .none
+                                }
                             }
                         }
                     } else {
                         DispatchQueue.main.async {
                             thumbnails.remove(at: indexPath.row)
                             thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
-                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) { cell.thumbnail.image = thumbnails[indexPath.row] }
+                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
+                                cell.thumbnail.image = thumbnails[indexPath.row]
+                                cell.selectionStyle = .none
+                            }
                         }
                     }
                 }
@@ -131,6 +137,11 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             loadEvents(priority: loadingPriority)
         }
     }
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        print("willSelectRowAt: \(indexPath), eventsTotal: \(eventsTotal)")
+        if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
+    }
 
     // MARK: - Navigation
 
@@ -142,7 +153,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.image = thumbnails[index.row]
+            destination.image = thumbnails[index.row] ?? UIImage(named: "icon")
         }
     }
     
