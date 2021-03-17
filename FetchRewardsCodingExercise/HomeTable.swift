@@ -8,13 +8,13 @@
 //TODO: UILock when scrolling far down on poor connection then tapping top bar to skip to top
     //lots of NSURLConnection finished with error - code -1001
 //TODO: prevent scrolling past 1 unloaded row
-//TODO: check for internet connection
 
 import UIKit
 
 class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
     
     let defaults = UserDefaults.standard
+    let numberFormatter = NumberFormatter()
     var events: [Event] = []
     var thumbnails: [UIImage?] = []
     var eventsTotal = 0
@@ -24,9 +24,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     var isLoading = false
     var loadingPriority = 0
     var nextPageCursor = 1
+    var networkStatusPrevious: Network.Status?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(statusManager), name: .flagsChanged, object: nil)
+        updateNetworkStatus()
         tableView.prefetchDataSource = self
         configureSearchBar()
         loadEventsInitial()
@@ -44,20 +47,20 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if eventsTotal > 1 {
-            return eventsTotal
-        } else {
-            return 1
-        }
-        
-    }
-
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         cell.selectionStyle = .none
+        if Network.reachability.status == .unreachable {
+            cell.title.text = "\nCheck internet connection 🔌"
+            cell.favorite.image = nil
+            cell.location.text = ""
+            cell.time.text = ""
+            cell.thumbnail.image = nil
+            cell.activityIndicator.stopAnimating()
+            return cell
+        }
         if !isLoading && eventsTotal < 1 {
-            cell.title.text = "\n0 events"
+            cell.title.text = "\n0 events 🤷‍♂️"
             cell.favorite.image = nil
             cell.location.text = ""
             cell.time.text = ""
@@ -114,11 +117,58 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         }
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if eventsTotal > 1 {
+            return eventsTotal
+        } else if isLoading {
+            return 1
+        } else {
+            return 0
+        }
+        
+    }
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths.contains(where: isLoadingCell) {
             loadEvents()
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if Network.reachability.status == .unreachable {
+            return "Check internet connection 🔌"
+        } else if !isLoading { //} && eventsTotal < 1 {
+            numberFormatter.numberStyle = .decimal
+            let eventsCount = (numberFormatter.string(from: NSNumber(value: eventsTotal)) ?? "0")
+            return "\(eventsCount) events"
+        } else {
+            return "loading"
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            if !UIAccessibility.isReduceTransparencyEnabled {
+                header.tintColor = .clear
+                let blurEffect = UIBlurEffect(style: .regular)
+                let blurEffectView = UIVisualEffectView(effect: blurEffect)
+                //always fill the view
+                blurEffectView.frame = header.bounds
+                blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                header.insertSubview(blurEffectView, at: 0)
+            } else {
+                header.tintColor = .none
+            }
+            header.contentView.backgroundColor = .clear
+            header.textLabel?.textColor = .grayBlue
+            header.textLabel?.textAlignment = NSTextAlignment.center
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        print("willSelectRowAt: \(indexPath), eventsTotal: \(eventsTotal)")
+        if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
     }
     
     func updateSearchResults(for searchController: UISearchController) {
@@ -132,15 +182,10 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             shouldCancelLoading = true
             loadingPriority += 1
             isLoading = false
-            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            //tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             tableView.reloadData()
             loadEvents(priority: loadingPriority)
         }
-    }
-    
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        print("willSelectRowAt: \(indexPath), eventsTotal: \(eventsTotal)")
-        if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
     }
 
     // MARK: - Navigation
@@ -208,12 +253,14 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
                                 let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
                                 if reloadTheseIndexPaths.count > 0 {
+                                    //print("loadEvents.tableView.reloadData NEXT PAGE")
                                     self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
                                 }
                             } else {
                                 self.events = results.events
                                 self.eventsTotal = results.meta.total
                                 self.thumbnails = [UIImage?](repeating: nil, count: self.eventsTotal)
+                                //print("loadEvents.tableView.reloadData FIRST PAGE")
                                 self.tableView.reloadData()
                             }
                             self.shouldCancelLoading = false
@@ -238,6 +285,34 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     
     private func isLoadingCell(for indexPath: IndexPath) -> Bool {
         return indexPath.row >= events.count
+    }
+    
+    @objc func statusManager(_ notification: Notification) {
+        updateNetworkStatus()
+    }
+    
+    private func updateNetworkStatus() {
+        if Network.reachability.status != networkStatusPrevious {
+            switch Network.reachability.status {
+            case .unreachable:
+                print("Network.reachability.status: UNREACHABLE")
+                nextPageCursor = 1
+                networkStatusPrevious = Network.reachability.status
+                isLoading = false
+                events = []
+                eventsTotal = 0
+                thumbnails = []
+                isLoading = false
+                tableView.reloadData()
+            case .wwan, .wifi:
+                print("Network.reachability.status: CONNECTED")
+                if networkStatusPrevious == .unreachable {
+                    networkStatusPrevious = Network.reachability.status
+                    loadEvents()
+                    //tableView.reloadData()
+                }
+            }
+        }
     }
     
     private func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
