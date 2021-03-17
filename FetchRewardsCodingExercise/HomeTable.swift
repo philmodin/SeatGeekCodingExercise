@@ -7,7 +7,6 @@
 
 //TODO: UILock when scrolling far down on poor connection then tapping top bar to skip to top
     //lots of NSURLConnection finished with error - code -1001
-//TODO: prevent scrolling past 1 unloaded row
 
 import UIKit
 
@@ -48,6 +47,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("cellForRowAt: \(indexPath)")
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         cell.selectionStyle = .none
         if Network.reachability.status == .unreachable {
@@ -169,6 +169,14 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         print("willSelectRowAt: \(indexPath), eventsTotal: \(eventsTotal)")
         if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if events.count > 10 {
+            let rectForFirstPending = self.tableView.rectForRow(at: IndexPath(row: self.events.count, section: 0))
+            let contentHeight = rectForFirstPending.origin.y + rectForFirstPending.height
+            self.tableView.contentSize = CGSize(width: self.tableView.contentSize.width, height: contentHeight)
+        }
     }
     
     func updateSearchResults(for searchController: UISearchController) {
