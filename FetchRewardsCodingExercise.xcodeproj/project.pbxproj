@@ -95,10 +95,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "FetchRewardsCodingExercise" */;
 			buildPhases = (
+				86C6A50826031911009F363C /* Generate InfoSeatGeek.plist from template */,
 				86C6A4BC25F8683D009F363C /* Sources */,
 				86C6A4BD25F8683D009F363C /* Frameworks */,
 				86C6A4BE25F8683D009F363C /* Resources */,
-				86C6A50826031911009F363C /* Copy Sample API ClientID */,
 			);
 			buildRules = (
 			);
@@ -156,7 +156,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		86C6A50826031911009F363C /* Copy Sample API ClientID */ = {
+		86C6A50826031911009F363C /* Generate InfoSeatGeek.plist from template */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -165,7 +165,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy Sample API ClientID";
+			name = "Generate InfoSeatGeek.plist from template";
 			outputFileListPaths = (
 			);
 			outputPaths = (

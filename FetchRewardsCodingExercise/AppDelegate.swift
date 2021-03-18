@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         do {
-            try Network.reachability = Reachability(hostname: "www.google.com")
+            try Network.reachability = Reachability(hostname: "api.seatgeek.com")
         }
         catch {
             switch error as? Network.Error {

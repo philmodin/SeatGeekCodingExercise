@@ -50,8 +50,12 @@ struct SeatGeek {
             guard let value = plist?.object(forKey: "ClientID") as? String else {
                 fatalError("Could not read ClientID in InfoSeatGeek.plist")
             }
-            if value.starts(with: "_") {
-                fatalError("Register for a SeatGeek developer account and get an API client ID at https://seatgeek.com/account/develop")
+            if value.starts(with: "Paste client ID here") {
+                print("⚠️ SeatGeek requires a valid API client ID")
+                print("Register for a SeatGeek developer account and get an API client ID at:")
+                print("https://seatgeek.com/account/develop")
+                print("If you have an existing client ID, add it to InfoSeatGeek.plist\n")
+                fatalError()
             }
             return value
         }
