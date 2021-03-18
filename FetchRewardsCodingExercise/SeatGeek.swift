@@ -41,7 +41,21 @@ struct SeatGeek {
     static let sorting = ""//"sort=datetime_local.desc&"
     static let resultsPerPage = 10
     static let dataFormat = "format=json&"
-    static var clientID = "MjE1ODMxMzl8MTYxNTI2NTE3Mi4yMjE2MTE3"
+    static var clientID: String {
+        get {
+            guard let filePath = Bundle.main.path(forResource: "InfoSeatGeek", ofType: "plist")else {
+                fatalError("Could not locate InfoSeatGeek.plist")
+            }
+            let plist = NSDictionary(contentsOfFile: filePath)
+            guard let value = plist?.object(forKey: "ClientID") as? String else {
+                fatalError("Could not read ClientID in InfoSeatGeek.plist")
+            }
+            if value.starts(with: "_") {
+                fatalError("Register for a SeatGeek developer account and get an API client ID at https://seatgeek.com/account/develop")
+            }
+            return value
+        }
+    }
     
     static let decoder = JSONDecoder()
 
