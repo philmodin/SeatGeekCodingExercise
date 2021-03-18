@@ -19,7 +19,7 @@
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
 		86C6A4FE26008235009F363C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4FD26008235009F363C /* Network.swift */; };
 		86C6A50126008260009F363C /* ExtNotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A50026008260009F363C /* ExtNotificationName.swift */; };
-		86C6A50626030FC8009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A50526030FC8009F363C /* InfoSeatGeek.plist */; };
+		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		86C6A4FD26008235009F363C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		86C6A50026008260009F363C /* ExtNotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtNotificationName.swift; sourceTree = "<group>"; };
-		86C6A50526030FC8009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
+		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 				86C6A4C925F8683D009F363C /* Main.storyboard */,
 				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
 				86C6A4D125F8683E009F363C /* Info.plist */,
-				86C6A50526030FC8009F363C /* InfoSeatGeek.plist */,
+				86C6A51226031D59009F363C /* InfoSeatGeek.plist */,
 			);
 			path = FetchRewardsCodingExercise;
 			sourceTree = "<group>";
@@ -98,6 +98,7 @@
 				86C6A4BC25F8683D009F363C /* Sources */,
 				86C6A4BD25F8683D009F363C /* Frameworks */,
 				86C6A4BE25F8683D009F363C /* Resources */,
+				86C6A50826031911009F363C /* Copy Sample API ClientID */,
 			);
 			buildRules = (
 			);
@@ -146,13 +147,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				86C6A4D025F8683E009F363C /* LaunchScreen.storyboard in Resources */,
-				86C6A50626030FC8009F363C /* InfoSeatGeek.plist in Resources */,
+				86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */,
 				86C6A4CD25F8683E009F363C /* Assets.xcassets in Resources */,
 				86C6A4CB25F8683D009F363C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		86C6A50826031911009F363C /* Copy Sample API ClientID */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Sample API ClientID";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nCONFIG_FILE_BASE_NAME=\"InfoSeatGeek\"\n\nCONFIG_FILE_NAME=${CONFIG_FILE_BASE_NAME}.plist\nSAMPLE_CONFIG_FILE_NAME=${CONFIG_FILE_BASE_NAME}-Template.plist\n\nCONFIG_FILE_PATH=$SRCROOT/$PRODUCT_NAME/$CONFIG_FILE_NAME\nSAMPLE_CONFIG_FILE_PATH=$SRCROOT/$PRODUCT_NAME/$SAMPLE_CONFIG_FILE_NAME\n\nif [ -f \"$CONFIG_FILE_PATH\" ]; then\n  echo \"$CONFIG_FILE_PATH exists.\"\nelse\n  echo \"$CONFIG_FILE_PATH does not exist, copying template\"\n  cp -v \"${SAMPLE_CONFIG_FILE_PATH}\" \"${CONFIG_FILE_PATH}\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		86C6A4BC25F8683D009F363C /* Sources */ = {
