@@ -23,7 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		86C6A4C025F8683D009F363C /* FetchRewardsCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FetchRewardsCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeatGeekCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C6A4C325F8683D009F363C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86C6A4C725F8683D009F363C /* EventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetails.swift; sourceTree = "<group>"; };
 		86C6A4CA25F8683D009F363C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 		86C6A4B725F8683D009F363C = {
 			isa = PBXGroup;
 			children = (
-				86C6A4C225F8683D009F363C /* FetchRewardsCodingExercise */,
+				86C6A4C225F8683D009F363C /* SeatGeekCodingExercise */,
 				86C6A4C125F8683D009F363C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,12 +62,12 @@
 		86C6A4C125F8683D009F363C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				86C6A4C025F8683D009F363C /* FetchRewardsCodingExercise.app */,
+				86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		86C6A4C225F8683D009F363C /* FetchRewardsCodingExercise */ = {
+		86C6A4C225F8683D009F363C /* SeatGeekCodingExercise */ = {
 			isa = PBXGroup;
 			children = (
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
@@ -85,15 +85,15 @@
 				86C6A4D125F8683E009F363C /* Info.plist */,
 				86C6A51226031D59009F363C /* InfoSeatGeek.plist */,
 			);
-			path = FetchRewardsCodingExercise;
+			path = SeatGeekCodingExercise;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		86C6A4BF25F8683D009F363C /* FetchRewardsCodingExercise */ = {
+		86C6A4BF25F8683D009F363C /* SeatGeekCodingExercise */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "FetchRewardsCodingExercise" */;
+			buildConfigurationList = 86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "SeatGeekCodingExercise" */;
 			buildPhases = (
 				86C6A50826031911009F363C /* Generate InfoSeatGeek.plist from template */,
 				86C6A4BC25F8683D009F363C /* Sources */,
@@ -104,9 +104,9 @@
 			);
 			dependencies = (
 			);
-			name = FetchRewardsCodingExercise;
+			name = SeatGeekCodingExercise;
 			productName = FetchRewardsCodingExercise;
-			productReference = 86C6A4C025F8683D009F363C /* FetchRewardsCodingExercise.app */;
+			productReference = 86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -123,7 +123,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 86C6A4BB25F8683D009F363C /* Build configuration list for PBXProject "FetchRewardsCodingExercise" */;
+			buildConfigurationList = 86C6A4BB25F8683D009F363C /* Build configuration list for PBXProject "SeatGeekCodingExercise" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -136,7 +136,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				86C6A4BF25F8683D009F363C /* FetchRewardsCodingExercise */,
+				86C6A4BF25F8683D009F363C /* SeatGeekCodingExercise */,
 			);
 		};
 /* End PBXProject section */
@@ -338,13 +338,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5X28646AN;
-				INFOPLIST_FILE = FetchRewardsCodingExercise/Info.plist;
+				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.FetchRewardsCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phil.SeatGeekCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -358,13 +358,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L5X28646AN;
-				INFOPLIST_FILE = FetchRewardsCodingExercise/Info.plist;
+				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.FetchRewardsCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phil.SeatGeekCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -374,7 +374,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		86C6A4BB25F8683D009F363C /* Build configuration list for PBXProject "FetchRewardsCodingExercise" */ = {
+		86C6A4BB25F8683D009F363C /* Build configuration list for PBXProject "SeatGeekCodingExercise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86C6A4D225F8683E009F363C /* Debug */,
@@ -383,7 +383,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "FetchRewardsCodingExercise" */ = {
+		86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "SeatGeekCodingExercise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86C6A4D525F8683E009F363C /* Debug */,

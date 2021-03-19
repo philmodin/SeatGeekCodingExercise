@@ -1,6 +1,6 @@
 //
 //  ExtUIColor.swift
-//  FetchRewardsCodingExercise
+//  SeatGeekCodingExercise
 //
 //  Created by endOfLine on 3/10/21.
 //

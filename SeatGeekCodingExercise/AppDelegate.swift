@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  FetchRewardsCodingExercise
+//  SeatGeekCodingExercise
 //
 //  Created by endOfLine on 3/9/21.
 //
