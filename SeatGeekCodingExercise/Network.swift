@@ -4,7 +4,7 @@
 //
 //  Created by endOfLine on 3/15/21.
 //
-
+//TODO: check if used with new Reachability else remove
 import Foundation
 
 struct Network {

@@ -37,6 +37,7 @@ struct Performers: Codable {
 }
 
 struct SeatGeek {
+    static let host = "api.seatgeek.com"
     static let apiBase = "https://api.seatgeek.com/2/events?"
     static let sorting = ""//"sort=datetime_local.desc&"
     static let resultsPerPage = 10
@@ -71,7 +72,6 @@ struct SeatGeek {
         }
         let urlString = apiBase + search + sorting + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
         print(urlString)
-        //print("query: \(query ?? ""), search: \(search)")
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 do {

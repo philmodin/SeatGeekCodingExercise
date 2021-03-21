@@ -36,7 +36,7 @@ class EventDetails: UIViewController {
     
     func assignProperties() {
         title = event.title
-        if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) { isFavorite = true }
+        if ((defaults.object(forKey: "favs") as? [Int])?.contains(event.id) ?? false) { isFavorite = true }
         
         view.layoutIfNeeded()
         thumbnail.image = image

@@ -18,7 +18,6 @@
 		86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* ExtUIColor.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
 		86C6A4FE26008235009F363C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4FD26008235009F363C /* Network.swift */; };
-		86C6A50126008260009F363C /* ExtNotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A50026008260009F363C /* ExtNotificationName.swift */; };
 		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +35,6 @@
 		86C6A4EF25F9A500009F363C /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		86C6A4FD26008235009F363C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
-		86C6A50026008260009F363C /* ExtNotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtNotificationName.swift; sourceTree = "<group>"; };
 		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,7 +70,6 @@
 			children = (
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
 				86C6A4C725F8683D009F363C /* EventDetails.swift */,
-				86C6A50026008260009F363C /* ExtNotificationName.swift */,
 				86C6A4EF25F9A500009F363C /* ExtUIColor.swift */,
 				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
 				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
@@ -183,7 +180,6 @@
 			files = (
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
-				86C6A50126008260009F363C /* ExtNotificationName.swift in Sources */,
 				86C6A4FE26008235009F363C /* Network.swift in Sources */,
 				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,

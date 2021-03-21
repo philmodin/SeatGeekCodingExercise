@@ -23,12 +23,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     var isLoading = false
     var loadingPriority = 0
     var nextPageCursor = 1
-    var networkStatusPrevious: Network.Status?
+    var reachability: Reachability?
+    var reachabilityPrevious: Reachability.Connection?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(statusManager), name: .flagsChanged, object: nil)
-        updateNetworkStatus()
+        reachabilityStart()
         tableView.prefetchDataSource = self
         configureSearchBar()
         loadEventsInitial()
@@ -50,7 +50,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         print("cellForRowAt: \(indexPath)")
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         cell.selectionStyle = .none
-        if Network.reachability.status == .unreachable {
+        if reachability?.connection == .unavailable {
             cell.title.text = "\nCheck internet connection 🔌"
             cell.favorite.image = nil
             cell.location.text = ""
@@ -76,7 +76,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         } else {
             let event = events[indexPath.row]
             cell.title.text = event.title
-            if ((defaults.object(forKey: "favs") as? [Int])!.contains(event.id)) {
+            if ((defaults.object(forKey: "favs") as? [Int])?.contains(event.id) ?? false) {
                 cell.favorite.image = UIImage(named: "heartFill")
             } else {
                 cell.favorite.image = nil
@@ -104,7 +104,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                         }
                     } else {
                         DispatchQueue.main.async {
-                            thumbnails.remove(at: indexPath.row)
+                            thumbnails.remove(at: indexPath.row) // Crashes when connection unavailable TODO: place into "if thumbnailPriority == self.loadingPriority"
                             thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
                             if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
                                 cell.thumbnail.image = thumbnails[indexPath.row]
@@ -136,7 +136,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if Network.reachability.status == .unreachable {
+        if reachability?.connection == .unavailable {
             return "Check internet connection 🔌"
         } else if !isLoading { //} && eventsTotal < 1 {
             numberFormatter.numberStyle = .decimal
@@ -282,7 +282,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     
     private func loadEventsInitial() {
         print("loadEventsInitial start")
-        if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
+        if let results = SeatGeek.parse() {
             eventsTotal = results.meta.total
             nextPageCursor = results.meta.page + 1
             events = results.events
@@ -295,37 +295,54 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         return indexPath.row >= events.count
     }
     
-    @objc func statusManager(_ notification: Notification) {
-        updateNetworkStatus()
-    }
-    
-    private func updateNetworkStatus() {
-        if Network.reachability.status != networkStatusPrevious {
-            switch Network.reachability.status {
-            case .unreachable:
+    @objc private func reachabilityChanged(_ note: Notification) {
+        let reachability = note.object as! Reachability
+        if reachability.connection != reachabilityPrevious {
+            switch reachability.connection {
+            case .unavailable:
                 print("Network.reachability.status: UNREACHABLE")
                 nextPageCursor = 1
-                networkStatusPrevious = Network.reachability.status
+                reachabilityPrevious = reachability.connection
                 isLoading = false
                 events = []
                 eventsTotal = 0
                 thumbnails = []
                 isLoading = false
                 tableView.reloadData()
-            case .wwan, .wifi:
+            case .cellular, .wifi:
                 print("Network.reachability.status: CONNECTED")
-                if networkStatusPrevious == .unreachable {
-                    networkStatusPrevious = Network.reachability.status
+                if reachabilityPrevious == .unavailable {
+                    reachabilityPrevious = reachability.connection
                     loadEvents()
-                    //tableView.reloadData()
+                    tableView.reloadData() // use this to display "loading" on slow connections while events are being fetched
                 }
             }
         }
+    }
+    
+    private func reachabilityStart() {
+        reachability = try? Reachability(hostname: SeatGeek.host)
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)), name: .reachabilityChanged, object: reachability)
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            print("Unable to start reachability notifier: \(error)")
+        }
+    }
+    
+    private func reachabilityStop() {
+        reachability?.stopNotifier()
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: nil)
+        reachability = nil
     }
     
     private func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
         let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows ?? []
         let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
         return Array(indexPathsIntersection)
+    }
+    
+    deinit {
+        reachabilityStop()
     }
 }
