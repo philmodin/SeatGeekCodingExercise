@@ -104,12 +104,20 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                         }
                     } else {
                         DispatchQueue.main.async {
-                            thumbnails.remove(at: indexPath.row) // Crashes when connection unavailable TODO: place into "if thumbnailPriority == self.loadingPriority"
-                            thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
-                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
-                                cell.thumbnail.image = thumbnails[indexPath.row]
-                                cell.selectionStyle = .none
+                            if thumbnailPriority == self.loadingPriority {
+                                thumbnails.remove(at: indexPath.row)
+                                thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
+                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
+                                    cell.thumbnail.image = thumbnails[indexPath.row]
+                                    cell.selectionStyle = .none
+                                }
                             }
+//                            thumbnails.remove(at: indexPath.row)
+//                            thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
+//                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
+//                                cell.thumbnail.image = thumbnails[indexPath.row]
+//                                cell.selectionStyle = .none
+//                            }
                         }
                     }
                 }
@@ -181,8 +189,8 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        print("updateSearchResults: " + text)
-        if text != searchQuery {
+        if text != searchQuery, reachability?.connection != .unavailable {
+            //print("updateSearchResults: " + text)
             searchQuery = text
             nextPageCursor = 1
             events = []
@@ -194,6 +202,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             tableView.reloadData()
             loadEvents(priority: loadingPriority)
         }
+        searchQuery = text
     }
 
     // MARK: - Navigation
@@ -304,6 +313,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                 nextPageCursor = 1
                 reachabilityPrevious = reachability.connection
                 isLoading = false
+                loadingPriority += 1
                 events = []
                 eventsTotal = 0
                 thumbnails = []
