@@ -1,5 +1,5 @@
 ## Seat Geek Coding Exercise
-<img src="SeatGeekFavorite.gif" alt="SeatGeekFavorite" style="zoom:50%;" />
+<img src="SeatGeekFavorite.gif" alt="SeatGeekFavorite" height="619" />
 
 ---
 ## Requirements 
@@ -29,4 +29,4 @@
 
 - Massive view controllers
 - Searching events using the `q` arguement produces unexpected results. For example searching "ba" returns less events than "bas"
-<img src="SeatGeekSearch.gif" alt="SeatGeekSearch" style="zoom:50%;" />
+<img src="SeatGeekSearch.gif" alt="SeatGeekSearch" height="619" />
