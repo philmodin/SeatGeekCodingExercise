@@ -71,7 +71,6 @@ struct SeatGeek {
             search = "q=\(spaceToPlus)&"
         }
         let urlString = apiBase + search + sorting + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
-        print(urlString)
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 do {

@@ -15,11 +15,7 @@ class HomeCell: UITableViewCell {
             thumbnail.clipsToBounds = true
         }
     }
-    @IBOutlet var activityIndicator: UIActivityIndicatorView! {
-        didSet {
-            //activityIndicator.startAnimating()
-        }
-    }
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet var favorite: UIImageView!
     @IBOutlet var title: UILabel!
     @IBOutlet var location: UILabel!

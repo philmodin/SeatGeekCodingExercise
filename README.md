@@ -9,14 +9,14 @@
 - [x] Events are searchable through SeatGeek API **(see known issues)**
 - [ ] Unit tests are preferable **(haven't taught myself unit testing yet but found [this](https://www.hackingwithswift.com/articles/94/how-to-refactor-your-app-to-add-unit-tests) resource to start)**
 - [x] Third party libraries are allowed **(used Reachability by ashleymills, no CocoaPods for install simplicity)**
-- [ ] Make sure that the application supports iOS 12 and above **(tested on simulator iPhone X iOS 12.1)**
-- [x] The application must compile with Xcode 12.x.x **(used 12.4)**
+- [x] Make sure that the application supports iOS 12 and above **(tested on simulator iPhone X iOS 12.1)**
+- [x] The application must compile with Xcode 12.x.x **(used Xcode 12.4)**
 - [x] Please add a README or equivalent documentation about your project
 
 ---
 ## Installation
 
-1. Clone repo: https://github.com/philmodin/SeatGeekCodingExercise
+1. Clone repo: https://github.com/philmodin/SeatGeekCodingExercise.git
 2. Open: `SeatGeekCodingExercise.xcodeproj`
 3. Set team and bundle ID.
 4. Notice `InfoSeatGeek.plist` is missing. Ignore it and build project, this file will be auto generated.
@@ -27,6 +27,7 @@
 ---
 ## Known issues
 
-- Massive view controllers
-- Searching events using the `q` arguement produces unexpected results. For example searching "ba" returns less events than "bas"
+- Massive view controllers **(found [this](https://www.hackingwithswift.com/articles/159/how-to-refactor-massive-view-controllers) resource to start)**.
+- Testing internet reconnection does not work on simulator. See GitHub [issue](https://github.com/ashleymills/Reachability.swift/issues/151).
+- Searching events using the `q` arguement produces unexpected results. For example searching "ba" returns less events than "bas" See GitHub [issue](https://github.com/seatgeek/api-support/issues/65).
 <img src="SeatGeekSearch.gif" alt="SeatGeekSearch" height="619" />

@@ -17,7 +17,6 @@
 		86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* HomeCell.swift */; };
 		86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* ExtUIColor.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
-		86C6A4FE26008235009F363C /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4FD26008235009F363C /* Network.swift */; };
 		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +33,6 @@
 		86C6A4E625F8CEE4009F363C /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
 		86C6A4EF25F9A500009F363C /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
-		86C6A4FD26008235009F363C /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,7 +71,6 @@
 				86C6A4EF25F9A500009F363C /* ExtUIColor.swift */,
 				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
 				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
-				86C6A4FD26008235009F363C /* Network.swift */,
 				86C6A4F9260081BB009F363C /* Reachability.swift */,
 				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
 				86C6A4CC25F8683E009F363C /* Assets.xcassets */,
@@ -180,7 +177,6 @@
 			files = (
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
-				86C6A4FE26008235009F363C /* Network.swift in Sources */,
 				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
 				86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */,
@@ -333,14 +329,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L5X28646AN;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phil.SeatGeekCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SeatGeekCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -353,14 +349,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L5X28646AN;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.phil.SeatGeekCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.SeatGeekCodingExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

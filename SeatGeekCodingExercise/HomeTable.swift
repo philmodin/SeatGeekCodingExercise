@@ -34,11 +34,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         loadEventsInitial()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //print("viewDidAppear")
-    }
-    
     // MARK: - Table view & data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -47,7 +42,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("cellForRowAt: \(indexPath)")
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! HomeCell
         cell.selectionStyle = .none
         if reachability?.connection == .unavailable {
@@ -112,12 +106,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                     cell.selectionStyle = .none
                                 }
                             }
-//                            thumbnails.remove(at: indexPath.row)
-//                            thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
-//                            if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
-//                                cell.thumbnail.image = thumbnails[indexPath.row]
-//                                cell.selectionStyle = .none
-//                            }
                         }
                     }
                 }
@@ -175,7 +163,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        print("willSelectRowAt: \(indexPath), eventsTotal: \(eventsTotal)")
         if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
     }
     
@@ -190,7 +177,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
         if text != searchQuery, reachability?.connection != .unavailable {
-            //print("updateSearchResults: " + text)
             searchQuery = text
             nextPageCursor = 1
             events = []
@@ -198,7 +184,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             shouldCancelLoading = true
             loadingPriority += 1
             isLoading = false
-            //tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             tableView.reloadData()
             loadEvents(priority: loadingPriority)
         }
@@ -209,8 +194,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
         if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
             destination.event = events[index.row]
             destination.tableView = tableView
@@ -235,16 +218,11 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.barStyle = .black
         searchController.searchBar.tintColor = .white
-//        searchController.searchBar.searchTextField.textColor = .white
         searchController.searchBar.barTintColor = .white
-//        searchController.searchBar.barStyle = .black
         if #available(iOS 13.0, *) {
             searchController.searchBar.searchTextField.leftView?.tintColor = .white
             searchController.searchBar.searchTextField.textColor = .white
-        } else {
-            // Fallback on earlier versions
         }
-//        searchController.searchBar.showsCancelButton = true
         searchController.hidesNavigationBarDuringPresentation = false
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.titleView = searchController.searchBar
@@ -252,14 +230,13 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     
     private func loadEvents(priority: Int = 0) {
         if self.isLoading {
-            print("still loading")
+            //print("still loading")
         } else {
             self.isLoading = true
             DispatchQueue.global().async {
-                //self.isLoading = true
                 if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
                     if self.shouldCancelLoading && priority < self.loadingPriority {
-                        print("cancelled loading")
+                        //print("cancelled loading")
                         return
                     } else {
                         DispatchQueue.main.async {
@@ -270,14 +247,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                                 let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
                                 let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
                                 if reloadTheseIndexPaths.count > 0 {
-                                    //print("loadEvents.tableView.reloadData NEXT PAGE")
                                     self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
                                 }
                             } else {
                                 self.events = results.events
                                 self.eventsTotal = results.meta.total
                                 self.thumbnails = [UIImage?](repeating: nil, count: self.eventsTotal)
-                                //print("loadEvents.tableView.reloadData FIRST PAGE")
                                 self.tableView.reloadData()
                             }
                             self.shouldCancelLoading = false
@@ -290,14 +265,12 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     private func loadEventsInitial() {
-        print("loadEventsInitial start")
         if let results = SeatGeek.parse() {
             eventsTotal = results.meta.total
             nextPageCursor = results.meta.page + 1
             events = results.events
             thumbnails = [UIImage?](repeating: nil, count: eventsTotal)
-        } else { print("initial load error") }
-        print("loadEventsInitial finished")
+        }
     }
     
     private func isLoadingCell(for indexPath: IndexPath) -> Bool {
@@ -309,7 +282,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         if reachability.connection != reachabilityPrevious {
             switch reachability.connection {
             case .unavailable:
-                print("Network.reachability.status: UNREACHABLE")
+                //print("Network.reachability.status: UNREACHABLE")
                 nextPageCursor = 1
                 reachabilityPrevious = reachability.connection
                 isLoading = false
@@ -320,11 +293,11 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
                 isLoading = false
                 tableView.reloadData()
             case .cellular, .wifi:
-                print("Network.reachability.status: CONNECTED")
+                //print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
                     loadEvents()
-                    tableView.reloadData() // use this to display "loading" on slow connections while events are being fetched
+                    tableView.reloadData() // using this to display "loading" on slow connections while events are being fetched
                 }
             }
         }
