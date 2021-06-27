@@ -1,5 +1,5 @@
 //
-//  ExtUIColor.swift
+//  UIColor-Ext.swift
 //  SeatGeekCodingExercise
 //
 //  Created by endOfLine on 3/10/21.

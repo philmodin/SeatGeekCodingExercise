@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE322687FC3500F39B0E /* EventsResponse.swift */; };
+		8699CE352688019200F39B0E /* RequestEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE342688019200F39B0E /* RequestEvents.swift */; };
 		86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4C325F8683D009F363C /* AppDelegate.swift */; };
 		86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4C725F8683D009F363C /* EventDetails.swift */; };
 		86C6A4CB25F8683D009F363C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4C925F8683D009F363C /* Main.storyboard */; };
@@ -15,12 +17,14 @@
 		86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4DB25F86A47009F363C /* HomeTable.swift */; };
 		86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E125F873A6009F363C /* SeatGeek.swift */; };
 		86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* HomeCell.swift */; };
-		86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* ExtUIColor.swift */; };
+		86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
 		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8699CE322687FC3500F39B0E /* EventsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsResponse.swift; sourceTree = "<group>"; };
+		8699CE342688019200F39B0E /* RequestEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestEvents.swift; sourceTree = "<group>"; };
 		86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeatGeekCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C6A4C325F8683D009F363C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86C6A4C725F8683D009F363C /* EventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetails.swift; sourceTree = "<group>"; };
@@ -31,7 +35,7 @@
 		86C6A4DB25F86A47009F363C /* HomeTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTable.swift; sourceTree = "<group>"; };
 		86C6A4E125F873A6009F363C /* SeatGeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeek.swift; sourceTree = "<group>"; };
 		86C6A4E625F8CEE4009F363C /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
-		86C6A4EF25F9A500009F363C /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
+		86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor-Ext.swift"; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -47,6 +51,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8699CE2E2687D0B400F39B0E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
+				86C6A4C725F8683D009F363C /* EventDetails.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		8699CE2F2687D0CD00F39B0E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
+				86C6A4C925F8683D009F363C /* Main.storyboard */,
+				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8699CE302687D0E500F39B0E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
+				8699CE322687FC3500F39B0E /* EventsResponse.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8699CE312687D0EC00F39B0E /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */,
+				86C6A4F9260081BB009F363C /* Reachability.swift */,
+				8699CE342688019200F39B0E /* RequestEvents.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		86C6A4B725F8683D009F363C = {
 			isa = PBXGroup;
 			children = (
@@ -67,15 +109,11 @@
 			isa = PBXGroup;
 			children = (
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
-				86C6A4C725F8683D009F363C /* EventDetails.swift */,
-				86C6A4EF25F9A500009F363C /* ExtUIColor.swift */,
-				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
-				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
-				86C6A4F9260081BB009F363C /* Reachability.swift */,
-				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
+				8699CE302687D0E500F39B0E /* Model */,
+				8699CE2F2687D0CD00F39B0E /* View */,
+				8699CE2E2687D0B400F39B0E /* Controller */,
+				8699CE312687D0EC00F39B0E /* Utility */,
 				86C6A4CC25F8683E009F363C /* Assets.xcassets */,
-				86C6A4C925F8683D009F363C /* Main.storyboard */,
-				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
 				86C6A4D125F8683E009F363C /* Info.plist */,
 				86C6A51226031D59009F363C /* InfoSeatGeek.plist */,
 			);
@@ -178,10 +216,12 @@
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
 				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
+				8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
-				86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */,
+				86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */,
 				86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */,
 				86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */,
+				8699CE352688019200F39B0E /* RequestEvents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,14 +369,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = L5X28646AN;
 				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SeatGeekCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phil.training.Project14-BucketList";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -349,14 +389,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = L5X28646AN;
 				INFOPLIST_FILE = SeatGeekCodingExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SeatGeekCodingExercise;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.phil.training.Project14-BucketList";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
