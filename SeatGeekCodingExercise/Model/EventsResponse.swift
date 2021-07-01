@@ -51,6 +51,14 @@ struct EventsResponse: Codable {
             }
         }
         
+        var cityState: String {
+            if let city = venue?.city, let state = venue?.state {
+                return city + ", " + state
+            } else {
+                return "no location"
+            }
+        }
+        
         let venue: Venue?
         struct Venue: Codable, Identifiable {
             let id: Int
