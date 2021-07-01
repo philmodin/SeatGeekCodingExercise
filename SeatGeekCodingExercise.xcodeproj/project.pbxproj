@@ -93,8 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				8699CE362688311100F39B0E /* EventsTable.swift */,
-				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
 				86C6A4C725F8683D009F363C /* EventDetails.swift */,
+				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

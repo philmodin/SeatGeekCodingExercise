@@ -27,10 +27,8 @@ struct Favorites {
         if var favsArray = defaults.object(forKey: favoritesKey) as? [Int] {
             var favsSet = Set(favsArray)
             if isFavorite(id) {
-//                favsSet.insert(id)
                 favsSet.remove(id)
             } else {
-//                favsSet.remove(id)
                 favsSet.insert(id)
             }
             favsArray = Array(favsSet)
