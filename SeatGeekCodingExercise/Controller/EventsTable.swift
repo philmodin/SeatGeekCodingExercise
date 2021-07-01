@@ -16,7 +16,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     var shouldCancelLoading = false
     var isLoading = false
     var loadingPriority = 0
-    var nextPageCursor = 1
     var reachability: Reachability?
     var reachabilityPrevious: Reachability.Connection?
     
@@ -112,7 +111,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         guard let text = searchController.searchBar.text else { return }
         if text != searchQuery, reachability?.connection != .unavailable {
             searchQuery = text
-            nextPageCursor = 1
+            eventsResponse = nil
             events = []
             shouldCancelLoading = true
             loadingPriority += 1
@@ -166,8 +165,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         if !isLoading {
             
             isLoading = true
-            
-            SGRequest().event(searching: self.searchQuery, at: self.nextPageCursor) { [weak self] eventsResponse, error in
+            SGRequest().event(searching: self.searchQuery, at: (eventsResponse?.meta.page ?? 0) + 1) { [weak self] eventsResponse, error in
                 
                 guard let self = self else { return }
                 self.isLoading = false
@@ -180,7 +178,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                 
                 print("loadEvents with priority: \(priority) LOADED with \(eventsResponse.meta.total) events")
                 self.eventsResponse = eventsResponse
-                self.nextPageCursor = eventsResponse.meta.page + 1
                 DispatchQueue.main.async {
                     
                     if eventsResponse.meta.page > 1 {
@@ -206,7 +203,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             if let eventsResponse = eventsResponse {
                 self?.eventsResponse = eventsResponse
                 self?.events = eventsResponse.events
-                self?.nextPageCursor = eventsResponse.meta.page + 1
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
@@ -224,9 +220,9 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             switch reachability.connection {
             case .unavailable:
                 print("Network.reachability.status: UNREACHABLE")
-                nextPageCursor = 1
                 reachabilityPrevious = reachability.connection
                 loadingPriority += 1
+                eventsResponse = nil
                 events = []
                 isLoading = false
                 tableView.reloadData()
