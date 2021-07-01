@@ -225,7 +225,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     }
     
     private func reachabilityStart() {
-        reachability = try? Reachability(hostname: SeatGeek.host)
+        reachability = try? Reachability(hostname: SGRequest().host)
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)), name: .reachabilityChanged, object: reachability)
         do {
             try reachability?.startNotifier()

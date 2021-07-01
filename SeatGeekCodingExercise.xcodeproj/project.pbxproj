@@ -19,7 +19,6 @@
 		86C6A4CB25F8683D009F363C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4C925F8683D009F363C /* Main.storyboard */; };
 		86C6A4CD25F8683E009F363C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CC25F8683E009F363C /* Assets.xcassets */; };
 		86C6A4D025F8683E009F363C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */; };
-		86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E125F873A6009F363C /* SeatGeek.swift */; };
 		86C6A4E725F8CEE4009F363C /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* EventCell.swift */; };
 		86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
@@ -53,7 +52,6 @@
 		86C6A4CC25F8683E009F363C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86C6A4CF25F8683E009F363C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		86C6A4D125F8683E009F363C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		86C6A4E125F873A6009F363C /* SeatGeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeek.swift; sourceTree = "<group>"; };
 		86C6A4E625F8CEE4009F363C /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
 		86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor-Ext.swift"; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 		8699CE302687D0E500F39B0E /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
 				8699CE322687FC3500F39B0E /* EventsResponse.swift */,
 			);
 			path = Model;
@@ -294,7 +291,6 @@
 			files = (
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
-				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
 				8699CE372688311100F39B0E /* EventsTable.swift in Sources */,
 				8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,

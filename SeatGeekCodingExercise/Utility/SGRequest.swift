@@ -5,7 +5,7 @@
 import UIKit
 
 struct SGRequest {
-    //let host = "api.seatgeek.com"
+    let host = "api.seatgeek.com"
     let apiBase = "https://api.seatgeek.com/2/events?"
     let resultsPerPage = 10
     let dataFormat = "format=json&"
