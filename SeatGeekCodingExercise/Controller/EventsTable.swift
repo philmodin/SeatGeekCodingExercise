@@ -1,24 +1,18 @@
 //
-//  HomeTable.swift
+//  EventsTable.swift
 //  SeatGeekCodingExercise
 //
-//  Created by endOfLine on 3/9/21.
+//  Created by endOfLine on 6/26/21.
 //
-
-//TODO: UILock when scrolling far down on poor connection then tapping top bar to skip to top
-    //lots of NSURLConnection finished with error - code -1001
 
 import UIKit
 
-class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
-    
-    let defaults = UserDefaults.standard
-    let numberFormatter = NumberFormatter()
-    var events: [Event] = []
-    var thumbnails: [UIImage?] = []
-    var eventsTotal = 0
-    var searchQuery = ""
+class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
+
+    var eventsResponse: EventsResponse?
+    var events = [EventsResponse.Event]()
     var searchController : UISearchController!
+    var searchQuery = ""
     var shouldCancelLoading = false
     var isLoading = false
     var loadingPriority = 0
@@ -37,88 +31,29 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     // MARK: - Table view & data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventCell
-        cell.selectionStyle = .none
+        
         if reachability?.connection == .unavailable {
-            cell.title.text = "\nCheck internet connection 🔌"
-            cell.favorite.image = nil
-            cell.location.text = ""
-            cell.time.text = ""
-            cell.thumbnail.image = nil
-            cell.activityIndicator.stopAnimating()
-            return cell
-        }
-        if !isLoading && eventsTotal < 1 {
-            cell.title.text = "\n0 events 🤷‍♂️"
-            cell.favorite.image = nil
-            cell.location.text = ""
-            cell.time.text = ""
-            cell.thumbnail.image = nil
-            cell.activityIndicator.stopAnimating()
+            cell.displayNoConnection()
+        } else if !isLoading && eventsResponse?.meta.total ?? 0 < 1 {
+            cell.displayNoEvents()
         } else if isLoadingCell(for: indexPath) {
-            cell.title.text = "_____ ___ __________ _______ _____ ___________"
-            cell.favorite.image = nil
-            cell.location.text = "__ _______"
-            cell.time.text = "______ _____ _ ____\n____ __"
-            cell.thumbnail.image = nil
-            cell.activityIndicator.startAnimating()
+            cell.displayLoading()
         } else {
-            let event = events[indexPath.row]
-            cell.title.text = event.title
-            if ((defaults.object(forKey: "favs") as? [Int])?.contains(event.id) ?? false) {
-                cell.favorite.image = UIImage(named: "heartFill")
-            } else {
-                cell.favorite.image = nil
-            }
-            cell.location.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
-            cell.time.text = SeatGeek.stringDayFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local)) + "\n" + SeatGeek.stringTimeFrom(date: SeatGeek.dateFrom(rfc: event.datetime_local))
-            if let thumbnail = thumbnails[indexPath.row] {
-                cell.thumbnail.image = thumbnail
-            } else {
-                cell.thumbnail.image = nil
-                cell.activityIndicator.startAnimating()
-                let thumbnailPriority = loadingPriority
-                DispatchQueue.global().async { [self] in
-                    if let data = try? Data(contentsOf: URL(string: (event.performers.first?.image ?? "_"))!) {
-                        if thumbnailPriority == self.loadingPriority {
-                            DispatchQueue.main.async {
-                                thumbnails.remove(at: indexPath.row)
-                                thumbnails.insert(UIImage(data: data), at: indexPath.row)
-                                cell.activityIndicator.stopAnimating()
-                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
-                                    cell.thumbnail.image = thumbnails[indexPath.row]
-                                    cell.selectionStyle = .none
-                                }
-                            }
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            if thumbnailPriority == self.loadingPriority {
-                                thumbnails.remove(at: indexPath.row)
-                                thumbnails.insert(UIImage(named: "icon"), at: indexPath.row)
-                                if (tableView.indexPathsForVisibleRows ?? []).contains(indexPath) {
-                                    cell.thumbnail.image = thumbnails[indexPath.row]
-                                    cell.selectionStyle = .none
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            cell.displayLoaded(events[indexPath.row])
         }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if eventsTotal > 1 {
+        
+        if let eventsTotal = eventsResponse?.meta.total {
             return eventsTotal
-        } else if isLoading {
-            return 1
         } else {
             return 0
         }
@@ -132,12 +67,11 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
         if reachability?.connection == .unavailable {
             return "Check internet connection 🔌"
-        } else if !isLoading { //} && eventsTotal < 1 {
-            numberFormatter.numberStyle = .decimal
-            let eventsCount = (numberFormatter.string(from: NSNumber(value: eventsTotal)) ?? "0")
-            return "\(eventsCount) events"
+        } else if !isLoading, let eventsTotal = eventsResponse?.meta.total {
+            return "\(eventsTotal.toDecimalString()) events"
         } else {
             return "loading"
         }
@@ -163,7 +97,7 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if isLoadingCell(for: indexPath) || eventsTotal < 1 { return nil } else { return indexPath }
+        if isLoadingCell(for: indexPath) || eventsResponse?.meta.total ?? 0 < 1 { return nil } else { return indexPath }
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -180,7 +114,6 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
             searchQuery = text
             nextPageCursor = 1
             events = []
-            eventsTotal = 0
             shouldCancelLoading = true
             loadingPriority += 1
             isLoading = false
@@ -195,16 +128,16 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
-            destination.event = events[index.row]
+//            destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.image = thumbnails[index.row] ?? UIImage(named: "icon")
+//            destination.image = thumbnails[index.row] ?? UIImage(named: "icon")
         }
     }
     
     // MARK: - Utilities
     
-    private func calculateIndexPathsToReload(from newEvents: [Event]) -> [IndexPath] {
+    private func calculateIndexPathsToReload(from newEvents: [EventsResponse.Event]) -> [IndexPath] {
         let startIndex = events.count - newEvents.count
         let endIndex = startIndex + newEvents.count
         return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
@@ -229,47 +162,55 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
     }
     
     private func loadEvents(priority: Int = 0) {
-        if self.isLoading {
-            //print("still loading")
-        } else {
-            self.isLoading = true
-            DispatchQueue.global().async {
-                if let results = SeatGeek.parse(query: self.searchQuery, pageCursor: self.nextPageCursor) {
-                    if self.shouldCancelLoading && priority < self.loadingPriority {
-                        //print("cancelled loading")
-                        return
-                    } else {
-                        DispatchQueue.main.async {
-                            self.nextPageCursor = results.meta.page + 1
-
-                            if results.meta.page > 1 {
-                                self.events.append(contentsOf: results.events)
-                                let newIndexPaths = self.calculateIndexPathsToReload(from: results.events)
-                                let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
-                                if reloadTheseIndexPaths.count > 0 {
-                                    self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
-                                }
-                            } else {
-                                self.events = results.events
-                                self.eventsTotal = results.meta.total
-                                self.thumbnails = [UIImage?](repeating: nil, count: self.eventsTotal)
-                                self.tableView.reloadData()
-                            }
-                            self.shouldCancelLoading = false
-                        }
-                    }
-                } else { print("load error") }
+        print("loadEvents with priority: \(priority) START")
+        if !isLoading {
+            
+            isLoading = true
+            
+            SGRequest().event(searching: self.searchQuery, at: self.nextPageCursor) { [weak self] eventsResponse, error in
+                
+                guard let self = self else { return }
                 self.isLoading = false
+                
+                guard let eventsResponse = eventsResponse, !(self.shouldCancelLoading && priority < self.loadingPriority)
+                else {
+                    print("cancelled loading with priority: \(priority)/\(self.loadingPriority), should cancel: \(self.shouldCancelLoading)")
+                    return
+                }
+                
+                print("loadEvents with priority: \(priority) LOADED with \(eventsResponse.meta.total) events")
+                self.eventsResponse = eventsResponse
+                self.nextPageCursor = eventsResponse.meta.page + 1
+                DispatchQueue.main.async {
+                    
+                    if eventsResponse.meta.page > 1 {
+                        self.events.append(contentsOf: eventsResponse.events)
+                        let newIndexPaths = self.calculateIndexPathsToReload(from: eventsResponse.events)
+                        let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
+                        if reloadTheseIndexPaths.count > 0 {
+                            self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
+                        }
+                    } else {
+                        self.events = eventsResponse.events
+                        self.tableView.reloadData()
+                    }
+                    self.shouldCancelLoading = false
+                }
             }
         }
     }
-    
+            
     private func loadEventsInitial() {
-        if let results = SeatGeek.parse() {
-            eventsTotal = results.meta.total
-            nextPageCursor = results.meta.page + 1
-            events = results.events
-            thumbnails = [UIImage?](repeating: nil, count: eventsTotal)
+        print("loadEventsInitial")
+        SGRequest().event { [weak self] eventsResponse, error in
+            if let eventsResponse = eventsResponse {
+                self?.eventsResponse = eventsResponse
+                self?.events = eventsResponse.events
+                self?.nextPageCursor = eventsResponse.meta.page + 1
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            }
         }
     }
     
@@ -282,18 +223,15 @@ class HomeTable: UITableViewController, UISearchResultsUpdating, UISearchBarDele
         if reachability.connection != reachabilityPrevious {
             switch reachability.connection {
             case .unavailable:
-                //print("Network.reachability.status: UNREACHABLE")
+                print("Network.reachability.status: UNREACHABLE")
                 nextPageCursor = 1
                 reachabilityPrevious = reachability.connection
-                isLoading = false
                 loadingPriority += 1
                 events = []
-                eventsTotal = 0
-                thumbnails = []
                 isLoading = false
                 tableView.reloadData()
             case .cellular, .wifi:
-                //print("Network.reachability.status: CONNECTED")
+                print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
                     loadEvents()

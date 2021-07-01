@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8623C9E3268C110800D75093"
+               BuildableName = "SeatGeekCodingExerciseTests.xctest"
+               BlueprintName = "SeatGeekCodingExerciseTests"
+               ReferencedContainer = "container:SeatGeekCodingExercise.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
