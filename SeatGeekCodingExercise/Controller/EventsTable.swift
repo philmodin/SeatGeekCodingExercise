@@ -127,10 +127,10 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
-//            destination.event = events[index.row]
+            destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-//            destination.image = thumbnails[index.row] ?? UIImage(named: "icon")
+            destination.image = UIImage(named: "icon")
         }
     }
     
