@@ -24,7 +24,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         reachabilityStart()
         tableView.prefetchDataSource = self
         configureSearchBar()
-        loadEventsInitial()
+        displayEvents()
     }
     
     // MARK: - Table view & data source
@@ -61,7 +61,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths.contains(where: isLoadingCell) {
-            loadEvents()
+            displayEvents()
         }
     }
     
@@ -117,7 +117,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             loadingPriority += 1
             isLoading = false
             tableView.reloadData()
-            loadEvents(priority: loadingPriority)
+            displayEvents(priority: loadingPriority)
         }
         searchQuery = text
     }
@@ -160,7 +160,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         navigationItem.titleView = searchController.searchBar
     }
     
-    private func loadEvents(priority: Int = 0) {
+    private func displayEvents(priority: Int = 0) {
         print("loadEvents with priority: \(priority) START")
         if !isLoading {
             
@@ -196,19 +196,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             }
         }
     }
-            
-    private func loadEventsInitial() {
-        print("loadEventsInitial")
-        SGRequest().event { [weak self] eventsResponse, error in
-            if let eventsResponse = eventsResponse {
-                self?.eventsResponse = eventsResponse
-                self?.events = eventsResponse.events
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            }
-        }
-    }
     
     private func isLoadingCell(for indexPath: IndexPath) -> Bool {
         return indexPath.row >= events.count
@@ -230,7 +217,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                 print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
-                    loadEvents()
+                    displayEvents()
                     tableView.reloadData() // using this to display "loading" on slow connections while events are being fetched
                 }
             }
