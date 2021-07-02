@@ -7,8 +7,6 @@
 
 import UIKit
 
-//enum EventCellStatus { case loaded, loading, noConnection, noEvents }
-
 class EventCell: UITableViewCell {
 
     @IBOutlet var thumbnail: UIImageView! {
@@ -36,18 +34,6 @@ class EventCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-//    func configureView(_ status: EventCellStatus, _ event: EventsResponse.Event) {
-//        
-//        selectionStyle = .none
-//        
-//        switch status {
-//        case .loaded: displayLoaded(event)
-//        case .loading: displayLoading()
-//        case .noConnection: displayNoConnection()
-//        case .noEvents: displayNoEvents()
-//        }
-//    }
-    
     func displayLoaded(_ event: EventsResponse.Event) {
         
         title.text = event.title
@@ -55,11 +41,7 @@ class EventCell: UITableViewCell {
         favorites.isFavorite(event.id) ? (favorite.image = UIImage(named: "heartFill")) : (favorite.image = nil)
         location.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
         time.text = event.day + "\n" + event.time
-        SGRequest().thumbnail(for: event.performers[0]?.imageURL) { [weak self] image in
-            DispatchQueue.main.async {
-                self?.thumbnail.image = image
-            }
-        }
+        thumbnail.image = event.thumbnail
     }
     
     func displayLoading() {

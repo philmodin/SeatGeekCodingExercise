@@ -5,6 +5,7 @@
 import UIKit
 
 struct SGRequest {
+    
     let host = "api.seatgeek.com"
     let apiBase = "https://api.seatgeek.com/2/events?"
     let resultsPerPage = 10
@@ -75,34 +76,11 @@ struct SGRequest {
         }.resume()
     }
     
-//    func thumbnail(for event: EventsResponse.Event, completionHandler: @escaping (UIImage) -> Void) {
-//        
-//        // check for image URL
-//        guard let requestURL = event.performers.first?.imageURL else {
-//            completionHandler(UIImage.placeholder)
-//            return
-//        }
-//        
-//        let request = URLRequest(url: requestURL)
-//        
-//        // perform the URL request
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            
-//            // return thumbnail otherwise return placeholder
-//            if let data = data, let thumbnail = UIImage(data: data) {
-//                completionHandler(thumbnail)
-//            } else {
-//                completionHandler(UIImage.placeholder)
-//            }
-//            
-//        }.resume()
-//    }
-    
-    func thumbnail(for url: URL?, completionHandler: @escaping (UIImage) -> Void) {
+    func thumbnail(for event: EventsResponse.Event, completionHandler: @escaping (Data?, Error?) -> Void) {
         
         // check for image URL
-        guard let requestURL = url else {
-            completionHandler(UIImage.placeholder)
+        guard let requestURL = event.performers[0]?.imageURL else {
+            completionHandler(nil, nil)
             return
         }
         
@@ -110,14 +88,8 @@ struct SGRequest {
         
         // perform the URL request
         URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            // return thumbnail otherwise return placeholder
-            if let data = data, let thumbnail = UIImage(data: data) {
-                completionHandler(thumbnail)
-            } else {
-                completionHandler(UIImage.placeholder)
-            }
-            
+            // return the data even if it's nil
+            completionHandler(data, error)
         }.resume()
     }
 }

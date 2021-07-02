@@ -59,6 +59,17 @@ struct EventsResponse: Codable {
             }
         }
         
+        var thumbnailData: Data?
+        var thumbnail: UIImage {
+            get {
+                if let data = thumbnailData, let image = UIImage(data: data) {
+                    return image
+                } else {
+                    return UIImage.placeholder
+                }
+            }
+        }
+        
         let venue: Venue?
         struct Venue: Codable, Identifiable {
             let id: Int
@@ -94,10 +105,34 @@ struct EventsResponse: Codable {
                 let name: String
             }
         }
+        
+        mutating func add(thumbnailData data: Data?) {
+            thumbnailData = data
+        }
     }
     
     struct Meta: Codable {
         let total: Int
         let page: Int
     }
+    
+    static let sampleEvent = Event(
+        id: 5052055,
+        title: "UEFA Euro Cup Quarterfinals: QF1",
+        short_title: "UEFA Euro Cup Quarterfinals: QF1",
+        datetime_local: "2021-07-02T03:30:00",
+        thumbnailData: nil,
+        venue: Event.Venue(
+            id: 419762,
+            name: "Krestovsky Stadium",
+            state: nil,
+            city: "Saint Petersburg",
+            location: Event.Venue.Location(lat: 59.9711, lon: 30.245)
+        ),
+        performers: [Event.Performer(
+                        id: 37452,
+                        image: "https://seatgeek.com/images/performers-landscape/generic-soccer-4e2b58/677196/32408/huge.jpg",
+                        taxonomies: []
+        )]
+    )
 }

@@ -11,6 +11,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
 
     var eventsResponse: EventsResponse?
     var events = [EventsResponse.Event]()
+    var cache = Cache()
     var searchController : UISearchController!
     var searchQuery = ""
     var shouldCancelLoading = false
@@ -24,7 +25,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         reachabilityStart()
         tableView.prefetchDataSource = self
         configureSearchBar()
-        displayEvents()
+        loadAndDisplayEvents()
     }
     
     // MARK: - Table view & data source
@@ -61,7 +62,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         if indexPaths.contains(where: isLoadingCell) {
-            displayEvents()
+            loadAndDisplayEvents()
         }
     }
     
@@ -117,7 +118,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             loadingPriority += 1
             isLoading = false
             tableView.reloadData()
-            displayEvents(priority: loadingPriority)
+            loadAndDisplayEvents(priority: loadingPriority)
         }
         searchQuery = text
     }
@@ -130,15 +131,15 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.image = UIImage(named: "icon")
+            destination.image = events[index.row].thumbnail
         }
     }
     
     // MARK: - Utilities
     
-    private func calculateIndexPathsToReload(from newEvents: [EventsResponse.Event]) -> [IndexPath] {
-        let startIndex = events.count - newEvents.count
-        let endIndex = startIndex + newEvents.count
+    private func calculateIndexPathsToReload(from newEventsCount: Int) -> [IndexPath] {
+        let startIndex = events.count - newEventsCount
+        let endIndex = startIndex + newEventsCount
         return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
     }
     
@@ -160,39 +161,64 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         navigationItem.titleView = searchController.searchBar
     }
     
-    private func displayEvents(priority: Int = 0) {
+    private func loadAndDisplayEvents(priority: Int = 0) {
         print("loadEvents with priority: \(priority) START")
         if !isLoading {
             
             isLoading = true
-            SGRequest().event(searching: self.searchQuery, at: (eventsResponse?.meta.page ?? 0) + 1) { [weak self] eventsResponse, error in
+            SGRequest().event(searching: self.searchQuery, at: (eventsResponse?.meta.page ?? 0) + 1) {
+                [weak self] eventsResponse, error in
                 
                 guard let self = self else { return }
                 self.isLoading = false
                 
                 guard let eventsResponse = eventsResponse, !(self.shouldCancelLoading && priority < self.loadingPriority)
-                else {
-                    print("cancelled loading with priority: \(priority)/\(self.loadingPriority), should cancel: \(self.shouldCancelLoading)")
-                    return
-                }
+                else { return }
                 
-                print("loadEvents with priority: \(priority) LOADED with \(eventsResponse.meta.total) events")
                 self.eventsResponse = eventsResponse
-                DispatchQueue.main.async {
-                    
-                    if eventsResponse.meta.page > 1 {
-                        self.events.append(contentsOf: eventsResponse.events)
-                        let newIndexPaths = self.calculateIndexPathsToReload(from: eventsResponse.events)
-                        let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
-                        if reloadTheseIndexPaths.count > 0 {
-                            self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
-                        }
-                    } else {
-                        self.events = eventsResponse.events
+                
+                if eventsResponse.meta.page > 1 {
+                    self.events.append(contentsOf: eventsResponse.events)
+                    self.reloadVisibleNewEvents(count: eventsResponse.events.count)
+                } else {
+                    self.events = eventsResponse.events
+                    DispatchQueue.main.async {
+//                        self.events = eventsResponse.events
                         self.tableView.reloadData()
                     }
-                    self.shouldCancelLoading = false
                 }
+                self.shouldCancelLoading = false
+                
+                self.loadAndDisplayThumbnails(for: eventsResponse.events)
+            }
+        }
+    }
+    
+    private func loadAndDisplayThumbnails(for newEvents: [EventsResponse.Event]) {
+        self.cache.loadThumbnails(for: newEvents) { _ in
+            DispatchQueue.main.sync {
+                for event in newEvents {
+                    self.importThumbnailDataFromCache(for: event.id)
+                }
+                DispatchQueue.main.async {
+                    self.reloadVisibleNewEvents(count: newEvents.count)
+                }
+            }
+        }
+    }
+    
+    private func importThumbnailDataFromCache(for eventID: Int) {
+        guard let index = events.firstIndex(where: { $0.id == eventID }) else { return }
+        guard let thumbnailData = cache.thumbnails[eventID] else { return }
+        events[index].add(thumbnailData: thumbnailData)
+    }
+    
+    private func reloadVisibleNewEvents(count newEventsCount: Int) {
+        DispatchQueue.main.async {            
+            let newIndexPaths = self.calculateIndexPathsToReload(from: newEventsCount)
+            let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
+            if reloadTheseIndexPaths.count > 0 {
+                self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
             }
         }
     }
@@ -217,7 +243,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                 print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
-                    displayEvents()
+                    loadAndDisplayEvents()
                     tableView.reloadData() // using this to display "loading" on slow connections while events are being fetched
                 }
             }
