@@ -39,7 +39,7 @@ class EventCell: UITableViewCell {
         title.text = event.title
         favorite.image = (favorites.isFavorite(event.id) ? UIImage(named: "heartFill") : nil)
         favorites.isFavorite(event.id) ? (favorite.image = UIImage(named: "heartFill")) : (favorite.image = nil)
-        location.text = event.location
+        location.text = event.venue?.display_location
         time.text = event.day + "\n" + event.time
         thumbnail.image = image
     }
