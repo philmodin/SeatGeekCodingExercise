@@ -26,7 +26,7 @@ class EventDetails: UIViewController, MKMapViewDelegate, SFSafariViewControllerD
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var thumbnail: UIImageView! {
         didSet {
-            thumbnail.layer.cornerRadius = 16
+            thumbnail.layer.cornerRadius = 32
             thumbnail.clipsToBounds = true
         }
     }
@@ -35,7 +35,12 @@ class EventDetails: UIViewController, MKMapViewDelegate, SFSafariViewControllerD
     @IBOutlet var city: UILabel!
     @IBOutlet var date: UILabel!
     @IBOutlet var time: UILabel!
-    @IBOutlet var ticketsButton: UIButton!
+    @IBOutlet var ticketsButton: UIButton! {
+        didSet {
+            ticketsButton.layer.cornerRadius = 32
+        }
+    }
+    @IBOutlet var priceRange: UILabel!
     
     @IBAction func ticketsTapped(_ sender: UIButton) {
         ticketsPresent()
@@ -139,14 +144,14 @@ class EventDetails: UIViewController, MKMapViewDelegate, SFSafariViewControllerD
             safari.modalPresentationStyle = .pageSheet
             safari.delegate = self
             if let lowest = event.stats.lowest_price, let highest = event.stats.highest_price {
-                let buttonText = "Tickets\n$\(lowest) - $\(highest)"
-                ticketsButton.titleLabel?.numberOfLines = 2
-                ticketsButton.titleLabel?.textAlignment = .center
-                ticketsButton.setTitle(buttonText, for: .normal)
+                let prices = "$\(lowest) - $\(highest)"
+                priceRange.text = prices
+                return
             }
         } else {
             ticketsButton.isEnabled = false
         }
+        priceRange.text = ""
     }
     
     func ticketsPresent() {
