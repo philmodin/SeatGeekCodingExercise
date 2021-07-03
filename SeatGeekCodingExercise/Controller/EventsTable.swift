@@ -37,7 +37,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventCell
-        
         if reachability?.connection == .unavailable {
             cell.displayNoConnection()
         } else if !isLoading && eventsResponse?.meta.total ?? 0 < 1 {
@@ -45,7 +44,8 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         } else if isLoadingCell(for: indexPath) {
             cell.displayLoading()
         } else {
-            cell.displayLoaded(events[indexPath.row])
+            let thumbnail = (cache.thumbnails[events[indexPath.row].id] ?? nil) ?? UIImage.placeholder
+            cell.displayLoaded(events[indexPath.row], image: thumbnail)
         }
         return cell
     }
@@ -57,7 +57,6 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         } else {
             return 0
         }
-        
     }
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -81,12 +80,16 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         if let header = view as? UITableViewHeaderFooterView {
             if !UIAccessibility.isReduceTransparencyEnabled {
                 header.tintColor = .clear
-                let blurEffect = UIBlurEffect(style: .regular)
-                let blurEffectView = UIVisualEffectView(effect: blurEffect)
-                //always fill the view
-                blurEffectView.frame = header.bounds
-                blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                header.insertSubview(blurEffectView, at: 0)
+                
+                let blurEffectViewTag = 8105
+                if !header.subviews.contains(where: { $0.tag == blurEffectViewTag }) {
+                    let blurEffect = UIBlurEffect(style: .regular)
+                    let blurEffectView = UIVisualEffectView(effect: blurEffect)
+                    blurEffectView.tag = blurEffectViewTag
+                    blurEffectView.frame = header.bounds
+                    blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                    header.insertSubview(blurEffectView, at: 0)
+                }                
             } else {
                 header.tintColor = .none
             }
@@ -131,7 +134,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.image = events[index.row].thumbnail
+            destination.image = (cache.thumbnails[events[index.row].id] ?? UIImage.placeholder) ?? UIImage.placeholder
         }
     }
     
@@ -162,9 +165,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     }
     
     private func loadAndDisplayEvents(priority: Int = 0) {
-        print("loadEvents with priority: \(priority) START")
         if !isLoading {
-            
             isLoading = true
             SGRequest().event(searching: self.searchQuery, at: (eventsResponse?.meta.page ?? 0) + 1) {
                 [weak self] eventsResponse, error in
@@ -172,50 +173,41 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                 guard let self = self else { return }
                 self.isLoading = false
                 
-                guard let eventsResponse = eventsResponse, !(self.shouldCancelLoading && priority < self.loadingPriority)
-                else { return }
+                guard let eventsResponse = eventsResponse else { return }
                 
+                guard !(priority > 0 && priority < self.loadingPriority) else { return }
+                
+                guard !(self.shouldCancelLoading && priority < self.loadingPriority) else { return }
                 self.eventsResponse = eventsResponse
                 
                 if eventsResponse.meta.page > 1 {
                     self.events.append(contentsOf: eventsResponse.events)
-                    self.reloadVisibleNewEvents(count: eventsResponse.events.count)
+                    let newIndexPaths = self.calculateIndexPathsToReload(from: eventsResponse.events.count)
+                    self.reloadVisibleNewEvents(newIndexPaths: newIndexPaths)
                 } else {
                     self.events = eventsResponse.events
                     DispatchQueue.main.async {
-//                        self.events = eventsResponse.events
                         self.tableView.reloadData()
                     }
                 }
+                self.loadAndDisplayNewThumbnails(for: eventsResponse.events)
                 self.shouldCancelLoading = false
-                
-                self.loadAndDisplayThumbnails(for: eventsResponse.events)
             }
         }
     }
     
-    private func loadAndDisplayThumbnails(for newEvents: [EventsResponse.Event]) {
-        self.cache.loadThumbnails(for: newEvents) { _ in
-            DispatchQueue.main.sync {
-                for event in newEvents {
-                    self.importThumbnailDataFromCache(for: event.id)
-                }
-                DispatchQueue.main.async {
-                    self.reloadVisibleNewEvents(count: newEvents.count)
-                }
+    private func loadAndDisplayNewThumbnails(for newEvents: [EventsResponse.Event], priority: Int = 0) {
+        let newIndexPaths = self.calculateIndexPathsToReload(from: newEvents.count)
+        cache.loadThumbnails(for: newEvents) { addedNewThumbnails in
+            if addedNewThumbnails && (priority >= self.loadingPriority || !self.shouldCancelLoading) {
+                self.reloadVisibleNewEvents(newIndexPaths: newIndexPaths)
             }
         }
     }
-    
-    private func importThumbnailDataFromCache(for eventID: Int) {
-        guard let index = events.firstIndex(where: { $0.id == eventID }) else { return }
-        guard let thumbnailData = cache.thumbnails[eventID] else { return }
-        events[index].add(thumbnailData: thumbnailData)
-    }
-    
-    private func reloadVisibleNewEvents(count newEventsCount: Int) {
-        DispatchQueue.main.async {            
-            let newIndexPaths = self.calculateIndexPathsToReload(from: newEventsCount)
+        
+    private func reloadVisibleNewEvents(newIndexPaths: [IndexPath]) {
+//        let newIndexPaths = self.calculateIndexPathsToReload(from: newEventsCount)
+        DispatchQueue.main.async {
             let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
             if reloadTheseIndexPaths.count > 0 {
                 self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
@@ -232,7 +224,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         if reachability.connection != reachabilityPrevious {
             switch reachability.connection {
             case .unavailable:
-                print("Network.reachability.status: UNREACHABLE")
+//                print("Network.reachability.status: UNREACHABLE")
                 reachabilityPrevious = reachability.connection
                 loadingPriority += 1
                 eventsResponse = nil
@@ -240,7 +232,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                 isLoading = false
                 tableView.reloadData()
             case .cellular, .wifi:
-                print("Network.reachability.status: CONNECTED")
+//                print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
                     loadAndDisplayEvents()

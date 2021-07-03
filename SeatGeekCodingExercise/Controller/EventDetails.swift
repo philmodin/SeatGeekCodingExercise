@@ -14,7 +14,7 @@ class EventDetails: UIViewController {
     weak var tableView: UITableView!
     var index: IndexPath!
     var event: EventsResponse.Event!
-    var image: UIImage!
+    var image = UIImage.placeholder
     let favButton = UIButton(type: .custom)
     let favorites = Favorites()
     
@@ -43,7 +43,7 @@ class EventDetails: UIViewController {
         let height = thumbnail.frame.width / imageRatio
         thumbnailHeight.constant = height
         
-        place.text = event.cityState
+        place.text = event.location
         dateTime.text = event.day + " " + event.time
     }
     

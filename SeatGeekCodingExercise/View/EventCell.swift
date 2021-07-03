@@ -34,18 +34,18 @@ class EventCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func displayLoaded(_ event: EventsResponse.Event) {
+    func displayLoaded(_ event: EventsResponse.Event, image: UIImage) {
         
         title.text = event.title
         favorite.image = (favorites.isFavorite(event.id) ? UIImage(named: "heartFill") : nil)
         favorites.isFavorite(event.id) ? (favorite.image = UIImage(named: "heartFill")) : (favorite.image = nil)
-        location.text = (event.venue?.city ?? "") + ", " + (event.venue?.state ?? "")
+        location.text = event.location
         time.text = event.day + "\n" + event.time
-        thumbnail.image = event.thumbnail
+        thumbnail.image = image
     }
     
     func displayLoading() {
-        
+//        print("cell displayLoading")
         title.text = "_____ ___ __________ _______ _____ ___________"
         favorite.image = nil
         location.text = "__ _______"

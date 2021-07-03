@@ -34,7 +34,6 @@ struct EventsResponse: Codable {
             if let day = date {
                 return dateFormatter.string(from: day)
             } else {
-//                return "______ _____ _ ____"
                 return "no date"
             }
         }
@@ -46,28 +45,17 @@ struct EventsResponse: Codable {
             if let day = date {
                 return dateFormatter.string(from: day)
             } else {
-//                return "____ __"
                 return "no time"
             }
         }
         
-        var cityState: String {
-            if let city = venue?.city, let state = venue?.state {
-                return city + ", " + state
-            } else {
-                return "no location"
+        var location: String {
+            guard let city = venue?.city else {
+                guard let state = venue?.state else { return "no location" }
+                return state
             }
-        }
-        
-        var thumbnailData: Data?
-        var thumbnail: UIImage {
-            get {
-                if let data = thumbnailData, let image = UIImage(data: data) {
-                    return image
-                } else {
-                    return UIImage.placeholder
-                }
-            }
+            guard let state = venue?.state else { return city }
+            return city + ", " + state
         }
         
         let venue: Venue?
@@ -104,11 +92,7 @@ struct EventsResponse: Codable {
                 let parent_id: Int?
                 let name: String
             }
-        }
-        
-        mutating func add(thumbnailData data: Data?) {
-            thumbnailData = data
-        }
+        }        
     }
     
     struct Meta: Codable {
@@ -121,7 +105,6 @@ struct EventsResponse: Codable {
         title: "UEFA Euro Cup Quarterfinals: QF1",
         short_title: "UEFA Euro Cup Quarterfinals: QF1",
         datetime_local: "2021-07-02T03:30:00",
-        thumbnailData: nil,
         venue: Event.Venue(
             id: 419762,
             name: "Krestovsky Stadium",
