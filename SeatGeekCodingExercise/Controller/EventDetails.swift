@@ -137,7 +137,13 @@ class EventDetails: UIViewController, MKMapViewDelegate, SFSafariViewControllerD
         if let url = URL(string: event.url) {
             safari = SFSafariViewController(url: url)
             safari.modalPresentationStyle = .pageSheet
-            safari.delegate = self            
+            safari.delegate = self
+            if let lowest = event.stats.lowest_price, let highest = event.stats.highest_price {
+                let buttonText = "Tickets\n$\(lowest) - $\(highest)"
+                ticketsButton.titleLabel?.numberOfLines = 2
+                ticketsButton.titleLabel?.textAlignment = .center
+                ticketsButton.setTitle(buttonText, for: .normal)
+            }
         } else {
             ticketsButton.isEnabled = false
         }
