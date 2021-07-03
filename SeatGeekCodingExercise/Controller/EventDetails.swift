@@ -7,18 +7,21 @@
 
 import UIKit
 import MapKit
+import SafariServices
 
-class EventDetails: UIViewController, MKMapViewDelegate {
+class EventDetails: UIViewController, MKMapViewDelegate, SFSafariViewControllerDelegate {
 
     let defaults = UserDefaults.standard
     
     weak var tableView: UITableView!
+    weak var searchController: UISearchController!
     var index: IndexPath!
     var event: EventsResponse.Event!
     var image = UIImage.placeholder
     let favButton = UIButton(type: .custom)
     let favorites = Favorites()
     var mapRegionThatFits: MKCoordinateRegion?
+    var safari: SFSafariViewController!
     
     @IBOutlet var mapView: MKMapView!
     @IBOutlet var thumbnail: UIImageView! {
@@ -32,12 +35,18 @@ class EventDetails: UIViewController, MKMapViewDelegate {
     @IBOutlet var city: UILabel!
     @IBOutlet var date: UILabel!
     @IBOutlet var time: UILabel!
+    @IBOutlet var ticketsButton: UIButton!
+    
+    @IBAction func ticketsTapped(_ sender: UIButton) {
+        ticketsPresent()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         assignProperties()
         favButtonConfigure()
         mapConfigure()
+        ticketsConfigure()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -122,6 +131,28 @@ class EventDetails: UIViewController, MKMapViewDelegate {
             annotationView?.annotation = annotation
         }
         return annotationView
+    }
+    
+    func ticketsConfigure() {
+        if let url = URL(string: event.url) {
+            safari = SFSafariViewController(url: url)
+            safari.modalPresentationStyle = .pageSheet
+            safari.delegate = self            
+        } else {
+            ticketsButton.isEnabled = false
+        }
+    }
+    
+    func ticketsPresent() {
+        if searchController.isActive {
+            searchController.present(safari, animated: true)
+        } else {
+            present(safari, animated: true, completion: nil)
+        }
+    }
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }
 

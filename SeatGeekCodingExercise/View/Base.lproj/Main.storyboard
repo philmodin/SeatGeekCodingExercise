@@ -193,18 +193,30 @@
                                             <constraint firstAttribute="height" constant="128" id="62U-Nl-VWS"/>
                                         </constraints>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cl9-dH-gRh">
+                                        <rect key="frame" x="32" y="532.5" width="350" height="209.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                        <state key="normal" title="Tickets"/>
+                                        <connections>
+                                            <action selector="ticketsTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZwI-9Q-SaG"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="Cl9-dH-gRh" firstAttribute="top" secondItem="vdb-Bb-Eng" secondAttribute="bottom" constant="32" id="25f-D9-y1N"/>
                                     <constraint firstItem="i0L-Xm-v0G" firstAttribute="leading" secondItem="ocQ-0J-wft" secondAttribute="leading" constant="16" id="2fx-9V-66Q"/>
                                     <constraint firstAttribute="trailing" secondItem="i0L-Xm-v0G" secondAttribute="trailing" constant="16" id="6w0-fB-RH8"/>
+                                    <constraint firstItem="Cl9-dH-gRh" firstAttribute="leading" secondItem="ocQ-0J-wft" secondAttribute="leading" constant="32" id="90D-e9-2FJ"/>
                                     <constraint firstItem="vdb-Bb-Eng" firstAttribute="leading" secondItem="kyU-NX-W0p" secondAttribute="trailing" constant="16" id="AHx-bp-PdW"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cl9-dH-gRh" secondAttribute="trailing" constant="32" id="KS7-PK-zCd"/>
                                     <constraint firstAttribute="trailing" secondItem="FGd-1F-4Qs" secondAttribute="trailing" id="LbV-6e-56J"/>
                                     <constraint firstItem="vdb-Bb-Eng" firstAttribute="top" secondItem="i0L-Xm-v0G" secondAttribute="bottom" constant="16" id="RfP-1V-Q3Z"/>
                                     <constraint firstItem="kyU-NX-W0p" firstAttribute="top" secondItem="i0L-Xm-v0G" secondAttribute="bottom" constant="16" id="Rpq-px-mWr"/>
                                     <constraint firstItem="i0L-Xm-v0G" firstAttribute="top" secondItem="FGd-1F-4Qs" secondAttribute="bottom" constant="16" id="UNA-2v-nUs"/>
                                     <constraint firstAttribute="trailing" secondItem="vdb-Bb-Eng" secondAttribute="trailing" constant="16" id="Uq4-WO-PXb"/>
                                     <constraint firstItem="FGd-1F-4Qs" firstAttribute="leading" secondItem="ocQ-0J-wft" secondAttribute="leading" id="WG3-RW-WEM"/>
+                                    <constraint firstAttribute="bottom" secondItem="Cl9-dH-gRh" secondAttribute="bottom" constant="32" id="YLS-Br-6Ua"/>
                                     <constraint firstItem="FGd-1F-4Qs" firstAttribute="top" secondItem="ocQ-0J-wft" secondAttribute="top" id="fbp-Dd-uFH"/>
                                     <constraint firstItem="kyU-NX-W0p" firstAttribute="leading" secondItem="ocQ-0J-wft" secondAttribute="leading" constant="16" id="fn0-jg-zZK"/>
                                 </constraints>
@@ -231,6 +243,7 @@
                         <outlet property="eventTitle" destination="i0L-Xm-v0G" id="65d-gU-3a0"/>
                         <outlet property="mapView" destination="FGd-1F-4Qs" id="YY7-DZ-3jB"/>
                         <outlet property="thumbnail" destination="kyU-NX-W0p" id="Pg8-bw-FM5"/>
+                        <outlet property="ticketsButton" destination="Cl9-dH-gRh" id="5jE-Lb-h43"/>
                         <outlet property="time" destination="cL2-fX-tyh" id="RB1-Ue-kOg"/>
                         <outlet property="venue" destination="qW5-6E-kpm" id="6RO-fc-2hM"/>
                     </connections>

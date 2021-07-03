@@ -14,6 +14,7 @@ struct EventsResponse: Codable {
         let title: String
         let short_title: String
         let datetime_local: String
+        let url: String
         // calculate Date from datetime_local
         var date: Date? {
             let RFC3339DateFormatter = DateFormatter()
@@ -84,7 +85,13 @@ struct EventsResponse: Codable {
                 let parent_id: Int?
                 let name: String
             }
-        }        
+        }
+        
+        let stats: Stats
+        struct Stats: Codable {
+            let lowest_price: Int?
+            let highest_price: Int?
+        }
     }
     
     struct Meta: Codable {
@@ -97,6 +104,7 @@ struct EventsResponse: Codable {
         title: "UEFA Euro Cup Quarterfinals: QF1",
         short_title: "UEFA Euro Cup Quarterfinals: QF1",
         datetime_local: "2021-07-02T03:30:00",
+        url: "https://seatgeek.com/uefa-euro-cup-quarterfinals-qf3-tickets/soccer/2021-07-03-3-30-am/5052051",
         venue: Event.Venue(
             id: 419762,
             name: "Krestovsky Stadium",
@@ -109,6 +117,10 @@ struct EventsResponse: Codable {
                         id: 37452,
                         image: "https://seatgeek.com/images/performers-landscape/generic-soccer-4e2b58/677196/32408/huge.jpg",
                         taxonomies: []
-        )]
+        )],
+        stats: EventsResponse.Event.Stats(
+            lowest_price: 177,
+            highest_price: 218
+        )
     )
 }

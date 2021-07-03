@@ -132,10 +132,11 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
+            destination.searchController = searchController
             destination.event = events[index.row]
             destination.tableView = tableView
             destination.index = index
-            destination.image = (cache.thumbnails[events[index.row].id] ?? UIImage.placeholder) ?? UIImage.placeholder
+            destination.image = (cache.thumbnails[events[index.row].id] ?? nil) ?? UIImage.placeholder
         }
     }
     
@@ -161,7 +162,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
             searchController.searchBar.searchTextField.textColor = .white
         }
         searchController.hidesNavigationBarDuringPresentation = false
-        navigationItem.hidesSearchBarWhenScrolling = false
+//        navigationItem.hidesSearchBarWhenScrolling = true
         navigationItem.titleView = searchController.searchBar
     }
     
