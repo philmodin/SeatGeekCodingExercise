@@ -23,6 +23,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     override func viewDidLoad() {
         super.viewDidLoad()
         reachabilityStart()
+        title = "Events"
         tableView.prefetchDataSource = self
         configureSearchBar()
         loadAndDisplayEvents()
@@ -44,7 +45,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         } else if isLoadingCell(for: indexPath) {
             cell.displayLoading()
         } else {
-            let thumbnail = (cache.thumbnails[events[indexPath.row].id] ?? nil) ?? UIImage.placeholder
+            let thumbnail = (cache.thumbnails[events[indexPath.row].id] ?? nil) ?? UIImage.placeholder // CRASHES randomly
             cell.displayLoaded(events[indexPath.row], image: thumbnail)
         }
         return cell

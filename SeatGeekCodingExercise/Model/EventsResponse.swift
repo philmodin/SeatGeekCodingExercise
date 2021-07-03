@@ -64,6 +64,7 @@ struct EventsResponse: Codable {
             let name: String
             let state: String?
             let city: String?
+            let display_location: String
             
             let location: Location
             struct Location: Codable {
@@ -110,6 +111,7 @@ struct EventsResponse: Codable {
             name: "Krestovsky Stadium",
             state: nil,
             city: "Saint Petersburg",
+            display_location: "Saint Petersburg, Russia",
             location: Event.Venue.Location(lat: 59.9711, lon: 30.245)
         ),
         performers: [Event.Performer(

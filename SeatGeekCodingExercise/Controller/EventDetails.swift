@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import MapKit
 
-class EventDetails: UIViewController {
+class EventDetails: UIViewController, MKMapViewDelegate {
 
     let defaults = UserDefaults.standard
     
@@ -17,34 +18,40 @@ class EventDetails: UIViewController {
     var image = UIImage.placeholder
     let favButton = UIButton(type: .custom)
     let favorites = Favorites()
+    var mapRegionThatFits: MKCoordinateRegion?
     
-    @IBOutlet var thumbnailHeight: NSLayoutConstraint!
+    @IBOutlet var mapView: MKMapView!
     @IBOutlet var thumbnail: UIImageView! {
         didSet {
             thumbnail.layer.cornerRadius = 16
             thumbnail.clipsToBounds = true
         }
     }
-    @IBOutlet var dateTime: UILabel!
-    @IBOutlet var place: UILabel!
+    @IBOutlet var eventTitle: UILabel!
+    @IBOutlet var venue: UILabel!
+    @IBOutlet var city: UILabel!
+    @IBOutlet var date: UILabel!
+    @IBOutlet var time: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         assignProperties()
         favButtonConfigure()
+        mapConfigure()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let region = mapRegionThatFits { mapView.setRegion(region, animated: true) }
     }
     
     func assignProperties() {
-        title = event.title
-        
-        view.layoutIfNeeded()
+        eventTitle.text = event.title
         thumbnail.image = image
-        let imageRatio = image.size.width / image.size.height
-        let height = thumbnail.frame.width / imageRatio
-        thumbnailHeight.constant = height
-        
-        place.text = event.location
-        dateTime.text = event.day + " " + event.time
+        venue.text = event.venue?.name
+        city.text = event.venue?.display_location
+        date.text = event.day
+        time.text = event.time
     }
     
     func favButtonConfigure() {
@@ -76,6 +83,45 @@ class EventDetails: UIViewController {
         favorites.toggle(event.id)
         favButtonUpdate()
         tableView.reloadRows(at: [index], with: .automatic)
+    }
+    
+    func mapAddAnnotation(for venue: EventsResponse.Event.Venue) {
+        let annotation = MKPointAnnotation()
+        annotation.title = venue.name
+        annotation.coordinate = venue.coordinates
+        mapView.addAnnotation(annotation)
+    }
+    
+    func mapConfigure() {
+        if let venue = event.venue {
+            mapView.delegate = self
+            mapView.centerCoordinate = venue.coordinates
+            
+            let regionClose = MKCoordinateRegion(center: venue.coordinates, latitudinalMeters: 2_000, longitudinalMeters: 2_000)
+            mapRegionThatFits = mapView.regionThatFits(regionClose)
+            
+            let regionFar = MKCoordinateRegion(center: venue.coordinates, latitudinalMeters: 60_000, longitudinalMeters: 60_000)
+            mapView.region = regionFar
+            
+            mapAddAnnotation(for: venue)
+        } else {
+            mapView.isHidden = true
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard annotation is MKPointAnnotation else { return nil }
+        
+        let reuseID = "annotation"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
+        
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+            annotationView?.canShowCallout = true
+        } else {
+            annotationView?.annotation = annotation
+        }
+        return annotationView
     }
 }
 
