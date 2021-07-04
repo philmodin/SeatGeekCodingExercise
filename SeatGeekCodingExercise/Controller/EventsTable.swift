@@ -2,21 +2,23 @@
 //  EventsTable.swift
 //  SeatGeekCodingExercise
 //
-//  Created by endOfLine on 6/26/21.
+//  Created by endOfLine on 7/4/21.
 //
 
 import UIKit
 
-class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate, UITableViewDataSourcePrefetching {
+class EventsTable: UITableViewController {
 
-    var eventsResponse: EventsResponse?
-    var events = [EventsResponse.Event]()
+    var eventsTotal = 0
+    var eventsNEW = [Int: EventsResponse.Event]()
     var cache = Cache()
+    
     var searchController : UISearchController!
     var searchQuery = ""
-    var shouldCancelLoading = false
+    var searchPriority = 0
+    
     var isLoading = false
-    var loadingPriority = 0
+    
     var reachability: Reachability?
     var reachabilityPrevious: Reachability.Connection?
     
@@ -26,54 +28,189 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         title = "Events"
         tableView.prefetchDataSource = self
         configureSearchBar()
-        loadAndDisplayEvents()
+        getEventsTotal(for: "", with: searchPriority)
     }
     
-    // MARK: - Table view & data source
+    deinit {
+        reachabilityStop()
+    }
+}
 
+// MARK: - Search
+extension EventsTable: UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
+    
+    private func configureSearchBar() {
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
+        searchController.searchBar.delegate = self
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.barStyle = .black
+        searchController.searchBar.tintColor = .white
+        searchController.searchBar.barTintColor = .white
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.searchTextField.leftView?.tintColor = .white
+            searchController.searchBar.searchTextField.textColor = .white
+        }
+        searchController.hidesNavigationBarDuringPresentation = false
+        navigationItem.titleView = searchController.searchBar
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text
+        else { return }
+        if text != searchQuery, reachability?.connection != .unavailable {
+            searchQuery = text
+            searchPriority += 1
+//            tableView.isScrollEnabled = false
+//            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+//            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+//            tableView.setContentOffset(tableView.contentOffset, animated: false)
+//            tableView.isScrollEnabled = true
+            getEventsTotal(for: searchQuery, with: searchPriority)
+        }
+    }
+}
+
+// MARK: - Prefetch
+extension EventsTable: UITableViewDataSourcePrefetching {
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            print("requesting prefetchRowsAt \(indexPath.row)")
+            guard !isCellLoaded(for: indexPath)
+            else { return }
+            getEvent(for: searchQuery, with: searchPriority, at: indexPath)
+        }
+    }
+}
+
+// MARK: - Fetch and Display
+extension EventsTable {
+    
+    private func getEventsTotal(for query: String, with priority: Int) {
+        eventsTotal = 0
+        eventsNEW = [:]
+        isLoading = true
+        tableView.isScrollEnabled = false
+        reloadEntireTable()
+        tableView.isScrollEnabled = true
+        
+        SGRequest().totalEvents(for: query) { [weak self] totalEvents, _ in
+            DispatchQueue.main.async {
+                guard let self = self,
+                      query == self.searchQuery,
+                      priority == self.searchPriority
+                else { return }
+                
+                self.eventsTotal = totalEvents ?? 0
+                self.isLoading = false
+                self.reloadEntireTable()
+                self.getEventsInitial(for: query, with: priority)
+            }
+        }
+    }
+    
+    private func getEventsInitial(for query: String, with priority: Int) {
+        DispatchQueue.main.async {
+            var rowCount = 10
+            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.count > rowCount {
+                rowCount = visibleRows.count
+            }
+            let initialRows = (0..<rowCount).map { IndexPath(row: $0, section: 0) }
+            for indexPath in initialRows {
+                self.getEvent(for: query, with: priority, at: indexPath)
+            }
+        }
+    }
+    
+    private func getEvent(for query: String, with priority: Int, at indexPath: IndexPath) {
+        print("getEvent at \(indexPath.row)")
+        SGRequest().event(for: query, at: indexPath) { [weak self] event, _ in
+            DispatchQueue.main.async {
+                guard let self = self,
+                      query == self.searchQuery,
+                      priority == self.searchPriority,
+                      let event = event
+                else { return }
+                
+                self.reloadRowIfVisible(at: indexPath, for: event)
+                self.getThumbnail(for: query, with: priority, at: indexPath, for: event)
+            }
+        }
+    }
+    
+    private func getThumbnail(for query: String, with priority: Int, at indexPath: IndexPath, for event: EventsResponse.Event) {
+        cache.thumbnail(for: event) { [weak self] mergedNewImage, _ in
+            DispatchQueue.main.async {
+                guard let self = self,
+                      query == self.searchQuery,
+                      priority == self.searchPriority, mergedNewImage
+                else { return }
+                
+                self.reloadRowIfVisible(at: indexPath)
+            }
+        }
+    }
+    
+    private func isCellLoaded(for indexPath: IndexPath) -> Bool {
+        return eventsNEW.keys.contains(indexPath.row)
+    }
+    
+    private func reloadEntireTable() {
+        self.tableView.reloadData()
+    }
+    
+    private func reloadRowIfVisible(at indexPath: IndexPath) {
+        if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false { print("reloading at \(indexPath.row)")
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
+    private func reloadRowIfVisible(at indexPath: IndexPath, for event: EventsResponse.Event) {
+        DispatchQueue.main.async {
+            if !self.isCellLoaded(for: indexPath) {
+                self.eventsNEW.merge([indexPath.row : event]) { _, new in new }
+                if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    //Thread 1: "attempt to insert row 0 into section 0, but there are only 0 rows in section 0 after the update"
+                    //searching Vegas, then Water. Ends at W-a
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Table view & data source
+extension EventsTable {
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) as! EventCell
-        if reachability?.connection == .unavailable {
-            cell.displayNoConnection()
-        } else if !isLoading && eventsResponse?.meta.total ?? 0 < 1 {
-            cell.displayNoEvents()
-        } else if isLoadingCell(for: indexPath) {
-            cell.displayLoading()
+        
+        if let event = eventsNEW[indexPath.row] {
+            let thumbnail = cache.thumbnails[event.id]
+            cell.displayLoaded(event, image: thumbnail)
         } else {
-            let thumbnail = (cache.thumbnails[events[indexPath.row].id] ?? nil) ?? UIImage.placeholder // CRASHES randomly
-            cell.displayLoaded(events[indexPath.row], image: thumbnail)
+            cell.displayLoading()
         }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if let eventsTotal = eventsResponse?.meta.total {
-            return eventsTotal
-        } else {
-            return 0
-        }
+        return eventsTotal
     }
 
-    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        if indexPaths.contains(where: isLoadingCell) {
-            loadAndDisplayEvents()
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
         if reachability?.connection == .unavailable {
             return "Check internet connection 🔌"
-        } else if !isLoading, let eventsTotal = eventsResponse?.meta.total {
-            return "\(eventsTotal.toDecimalString()) events"
-        } else {
+        } else if isLoading {
             return "loading"
+        } else {
+            return "\(eventsTotal.toDecimalString()) events"
         }
     }
     
@@ -90,7 +227,7 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
                     blurEffectView.frame = header.bounds
                     blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
                     header.insertSubview(blurEffectView, at: 0)
-                }                
+                }
             } else {
                 header.tintColor = .none
             }
@@ -101,144 +238,49 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        if isLoadingCell(for: indexPath) || eventsResponse?.meta.total ?? 0 < 1 { return nil } else { return indexPath }
+        guard isCellLoaded(for: indexPath)
+        else { return nil }
+        return indexPath
     }
-    
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if events.count > 10 {
-            let rectForFirstPending = self.tableView.rectForRow(at: IndexPath(row: self.events.count, section: 0))
-            let contentHeight = rectForFirstPending.origin.y + rectForFirstPending.height
-            self.tableView.contentSize = CGSize(width: self.tableView.contentSize.width, height: contentHeight)
-        }
-    }
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text else { return }
-        if text != searchQuery, reachability?.connection != .unavailable {
-            searchQuery = text
-            eventsResponse = nil
-            events = []
-            shouldCancelLoading = true
-            loadingPriority += 1
-            isLoading = false
-            tableView.reloadData()
-            loadAndDisplayEvents(priority: loadingPriority)
-        }
-        searchQuery = text
-    }
+}
 
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+// MARK: - Navigation
+extension EventsTable {
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? EventDetails, let index = tableView.indexPathForSelectedRow {
+        if let destination = segue.destination as? EventDetails,
+           let indexPath = tableView.indexPathForSelectedRow,
+           let event = eventsNEW[indexPath.row]
+        {
             destination.searchController = searchController
-            destination.event = events[index.row]
+            destination.event = event
             destination.tableView = tableView
-            destination.index = index
-            destination.image = (cache.thumbnails[events[index.row].id] ?? nil) ?? UIImage.placeholder
+            destination.index = indexPath
+            destination.image = cache.thumbnails[event.id, default: cache.placeholder]
         }
     }
-    
-    // MARK: - Utilities
-    
-    private func calculateIndexPathsToReload(from newEventsCount: Int) -> [IndexPath] {
-        let startIndex = events.count - newEventsCount
-        let endIndex = startIndex + newEventsCount
-        return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
-    }
-    
-    private func configureSearchBar() {
-        searchController = UISearchController(searchResultsController: nil)
-        searchController.delegate = self
-        searchController.searchBar.delegate = self
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.barStyle = .black
-        searchController.searchBar.tintColor = .white
-        searchController.searchBar.barTintColor = .white
-        if #available(iOS 13.0, *) {
-            searchController.searchBar.searchTextField.leftView?.tintColor = .white
-            searchController.searchBar.searchTextField.textColor = .white
-        }
-        searchController.hidesNavigationBarDuringPresentation = false
-//        navigationItem.hidesSearchBarWhenScrolling = true
-        navigationItem.titleView = searchController.searchBar
-    }
-    
-    private func loadAndDisplayEvents(priority: Int = 0) {
-        if !isLoading {
-            isLoading = true
-            SGRequest().event(searching: self.searchQuery, at: (eventsResponse?.meta.page ?? 0) + 1) {
-                [weak self] eventsResponse, error in
-                
-                guard let self = self else { return }
-                self.isLoading = false
-                
-                guard let eventsResponse = eventsResponse else { return }
-                
-                guard !(priority > 0 && priority < self.loadingPriority) else { return }
-                
-                guard !(self.shouldCancelLoading && priority < self.loadingPriority) else { return }
-                self.eventsResponse = eventsResponse
-                
-                if eventsResponse.meta.page > 1 {
-                    self.events.append(contentsOf: eventsResponse.events)
-                    let newIndexPaths = self.calculateIndexPathsToReload(from: eventsResponse.events.count)
-                    self.reloadVisibleNewEvents(newIndexPaths: newIndexPaths)
-                } else {
-                    self.events = eventsResponse.events
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                }
-                self.loadAndDisplayNewThumbnails(for: eventsResponse.events)
-                self.shouldCancelLoading = false
-            }
-        }
-    }
-    
-    private func loadAndDisplayNewThumbnails(for newEvents: [EventsResponse.Event], priority: Int = 0) {
-        let newIndexPaths = self.calculateIndexPathsToReload(from: newEvents.count)
-        cache.loadThumbnails(for: newEvents) { addedNewThumbnails in
-            if addedNewThumbnails && (priority >= self.loadingPriority || !self.shouldCancelLoading) {
-                self.reloadVisibleNewEvents(newIndexPaths: newIndexPaths)
-            }
-        }
-    }
-        
-    private func reloadVisibleNewEvents(newIndexPaths: [IndexPath]) {
-//        let newIndexPaths = self.calculateIndexPathsToReload(from: newEventsCount)
-        DispatchQueue.main.async {
-            let reloadTheseIndexPaths = self.visibleIndexPathsToReload(intersecting: newIndexPaths)
-            if reloadTheseIndexPaths.count > 0 {
-                self.tableView.reloadRows(at: reloadTheseIndexPaths, with: .automatic)
-            }
-        }
-    }
-    
-    private func isLoadingCell(for indexPath: IndexPath) -> Bool {
-        return indexPath.row >= events.count
-    }
+}
+
+// MARK: - Reachability
+extension EventsTable {
     
     @objc private func reachabilityChanged(_ note: Notification) {
         let reachability = note.object as! Reachability
         if reachability.connection != reachabilityPrevious {
             switch reachability.connection {
             case .unavailable:
-//                print("Network.reachability.status: UNREACHABLE")
-                reachabilityPrevious = reachability.connection
-                loadingPriority += 1
-                eventsResponse = nil
-                events = []
-                isLoading = false
-                tableView.reloadData()
+                if reachabilityPrevious != .unavailable {
+                    reachabilityPrevious = reachability.connection
+                    eventsNEW = [:]
+                    isLoading = false
+                    reloadEntireTable()
+                }
             case .cellular, .wifi:
-//                print("Network.reachability.status: CONNECTED")
                 if reachabilityPrevious == .unavailable {
                     reachabilityPrevious = reachability.connection
-                    loadAndDisplayEvents()
-                    tableView.reloadData() // using this to display "loading" on slow connections while events are being fetched
+                    eventsNEW = [:]
+                    getEventsTotal(for: searchQuery, with: searchPriority)
+                    reloadEntireTable() // using this to display "loading" on slow connections while events are being fetched
                 }
             }
         }
@@ -258,15 +300,5 @@ class EventsTable: UITableViewController, UISearchResultsUpdating, UISearchBarDe
         reachability?.stopNotifier()
         NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: nil)
         reachability = nil
-    }
-    
-    private func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
-        let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows ?? []
-        let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
-        return Array(indexPathsIntersection)
-    }
-    
-    deinit {
-        reachabilityStop()
     }
 }

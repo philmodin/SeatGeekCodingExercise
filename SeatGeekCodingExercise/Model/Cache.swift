@@ -9,29 +9,23 @@ import UIKit
 
 class Cache {
     
-    var thumbnails = [Int: UIImage?]()
+    var thumbnails = [Int: UIImage]()
+    let placeholder = UIImage.placeholder
     
-    func loadThumbnails(for newEvents: [EventsResponse.Event], addedNewThumbnails: @escaping (Bool) -> Void) {
-        
-        var hasNewThumbnails = false
-        var eventsProcessed = 0
-        
-        for event in newEvents {
-            
-            if thumbnails.keys.contains(event.id) {
-                eventsProcessed += 1
-                if eventsProcessed == newEvents.count { addedNewThumbnails(hasNewThumbnails) }
-                
+    func thumbnail(for event: EventsResponse.Event, completionHandler: @escaping (Bool, Error?) -> Void) {
+        DispatchQueue.main.async {
+            if self.thumbnails.keys.contains(event.id) {
+                completionHandler(false, nil)
             } else {
-                SGRequest().thumbnail(for: event) { data, _ in
-                    
-                    if let data = data, let image = UIImage(data: data) {
-                        self.thumbnails.merge([event.id : image]) { _, new in new }
-                        hasNewThumbnails = true
+                SGRequest().thumbnail(for: event) { data, error in
+                    DispatchQueue.main.async {
+                        if let data = data, let image = UIImage(data: data) {
+                            self.thumbnails.merge([event.id : image]) { _, new in new }
+                        } else {
+                            self.thumbnails.merge([event.id : self.placeholder]) { current, _ in current }
+                        }
+                        completionHandler(true, error)
                     }
-                    
-                    eventsProcessed += 1
-                    if eventsProcessed == newEvents.count { addedNewThumbnails(hasNewThumbnails) }
                 }
             }
         }

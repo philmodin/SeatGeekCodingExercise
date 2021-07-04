@@ -22,57 +22,48 @@ class SeatGeekCodingExerciseTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testSeatGeekLoadingInitial() {
-        let expectEvents = expectation(description: "load events")
+    func testSeatGeekMeta() {
+        let expectMeta = expectation(description: "load meta")
         
-        SGRequest().event { eventsResponse, error in
+        SGRequest().totalEvents(for: "") { totalEvents, error in
             if let error = error { XCTFail(error.localizedDescription) }
-            XCTAssertNotEqual(eventsResponse?.events.count ?? 0, 0, "Events should not be empty")
+            XCTAssertNotNil(totalEvents, "Meta for total results should not be nil")
+            XCTAssert(totalEvents! > 0, "There should be at least 1 result in the meta")
+            expectMeta.fulfill()
+        }
+        waitForExpectations(timeout: 5)
+    }
+    
+    func testSeatGeekEvent() {
+        let expectEvents = expectation(description: "load event")
+        
+        SGRequest().event(for: "", at: IndexPath(row: 0, section: 0)) { event, error in
+            if let error = error { XCTFail(error.localizedDescription) }
+            XCTAssertNotNil(event, "There should be an event.")
             expectEvents.fulfill()
         }
         waitForExpectations(timeout: 5)
     }
     
-    func testSeatGeekLoadingNextPage() {
-        let expectFirstPage = expectation(description: "load first page")
-        let expectSecondPage = expectation(description: "load second page")
-        
-        SGRequest().event { eventsResponse, error in
-            if let error = error { XCTFail(error.localizedDescription) }
-            XCTAssertNotEqual(eventsResponse?.events.count ?? 0, 0, "Events should not be empty on first page")
-            expectFirstPage.fulfill()
-
-            SGRequest().event(at: (eventsResponse?.meta.page ?? 0) + 1) { eventsResponse, error in
-                if let error = error { XCTFail(error.localizedDescription) }
-                XCTAssertEqual(eventsResponse?.meta.page ?? 0, 2, "Response meta should indicate page 2")
-                expectSecondPage.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 5)
-    }
-    
-    func testSeatGeekSearchQuery() {
+    func testSeatGeekSearch() {
         
         let expectQuery = expectation(description: "load query")
         let query = "basket"
         
-        SGRequest().event(searching: query) { eventsResponse, error in
+        SGRequest().event(for: query, at: IndexPath(row: 0, section: 0)) { event, error in
             if let error = error { XCTFail(error.localizedDescription) }
-            
-            let doesContainQuery = eventsResponse?.events.contains {
-                $0.performers.contains {
-                    $0!.taxonomies.contains {
-                        $0!.name.contains(query)
-                    }
+            let doesContainQuery = event?.performers.contains {
+                $0!.taxonomies.contains {
+                    $0!.name.contains(query)
                 }
             }
             XCTAssertEqual(doesContainQuery, true, "Query should be present in first event content")
             expectQuery.fulfill()
-        }
+        }        
         waitForExpectations(timeout: 5)
     }
     
-    func testLoadThumbnail() {
+    func testSeatGeekThumbnail() {
         let expectImage = expectation(description: "load image")
         
         SGRequest().thumbnail(for: EventsResponse.sampleEvent) { data, error in

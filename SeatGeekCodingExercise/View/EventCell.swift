@@ -34,14 +34,19 @@ class EventCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func displayLoaded(_ event: EventsResponse.Event, image: UIImage) {
+    func displayLoaded(_ event: EventsResponse.Event, image: UIImage?) {
         
         title.text = event.title
         favorite.image = (favorites.isFavorite(event.id) ? UIImage(named: "heartFill") : nil)
         favorites.isFavorite(event.id) ? (favorite.image = UIImage(named: "heartFill")) : (favorite.image = nil)
         location.text = event.venue?.display_location
         time.text = event.day + "\n" + event.time
-        thumbnail.image = image
+        if let image = image {
+            activityIndicator.stopAnimating()
+            thumbnail.image = image
+        } else {
+            activityIndicator.startAnimating()
+        }
     }
     
     func displayLoading() {
@@ -52,25 +57,5 @@ class EventCell: UITableViewCell {
         time.text = "______ _____ _ ____\n____ __"
         thumbnail.image = nil
         activityIndicator.startAnimating()
-    }
-    
-    func displayNoConnection() {
-        
-        title.text = "\nCheck internet connection 🔌"
-        favorite.image = nil
-        location.text = ""
-        time.text = ""
-        thumbnail.image = nil
-        activityIndicator.stopAnimating()
-    }
-    
-    func displayNoEvents() {
-        
-        title.text = "\n0 events 🤷‍♂️"
-        favorite.image = nil
-        location.text = ""
-        time.text = ""
-        thumbnail.image = nil
-        activityIndicator.stopAnimating()
     }
 }

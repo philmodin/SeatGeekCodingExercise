@@ -36,43 +36,43 @@ struct SGRequest {
         }
     }
     
-    // using URLSession to fetch events with search query and page cursor, completing with optional results or error
-    func event(searching query: String? = nil, at pageCursor: Int = 1, completionHandler: @escaping (EventsResponse?, Error?) -> Void) {
-        
-        // query string needs to be formatted by replacing " " with "+" for request URL
-        var formattedQuery: String {
-            if let query = query {
-                let formattedQuery = query.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
-                return "q=\(formattedQuery)&"
-            } else { return "" }
-        }
-        
-        // assembling request URL string
-        let urlString = apiBase + formattedQuery + "per_page=\(resultsPerPage)&" + "page=\(pageCursor)&" + dataFormat + "client_id=\(clientID)"
-
-        // make and check request URL
-        guard let requestURL = URL(string: urlString) else {
+    func totalEvents(for query: String, completionHandler: @escaping (Int?, Error?) -> Void) {
+        guard let request = buildRequest(query: query, batchSize: 1, page: 1)
+        else {
             completionHandler(nil, nil)
             return
         }
-        
-        let request = URLRequest(url: requestURL)
-        
-        // perform the URL request
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            
-            // check for data, otherwise send error
+        URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data {
-                // try decoding, otherwise send error
                 do {
                     let eventsResponseDecoded = try JSONDecoder().decode(EventsResponse.self, from: data)
-                    completionHandler(eventsResponseDecoded, nil)
+                    completionHandler(eventsResponseDecoded.meta.total, nil)
                 } catch {
                     completionHandler(nil, error)
                 }
             } else if let error = error {
                 completionHandler(nil, error)
-            }            
+            }
+        }.resume()
+    }
+    
+    func event(for query: String, at indexPath: IndexPath, completionHandler: @escaping (EventsResponse.Event?, Error?) -> Void) {
+        guard let request = buildRequest(query: query, batchSize: 1, page: indexPath.row + 1)
+        else {
+            completionHandler(nil, nil)
+            return
+        }
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data {
+                do {
+                    let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
+                    completionHandler(eventsResponse.events.first, nil)
+                } catch {
+                    completionHandler(nil, error)
+                }
+            } else if let error = error {
+                completionHandler(nil, error)
+            }
         }.resume()
     }
     
@@ -92,4 +92,30 @@ struct SGRequest {
             completionHandler(data, error)
         }.resume()
     }
+}
+
+extension SGRequest {
+    
+    private func buildRequest(query: String, batchSize: Int, page: Int) -> URLRequest? {
+        let formattedQuery = formatQuery(query)
+        let urlString = assembleURLString(formattedQuery: formattedQuery, batchSize: batchSize, pageCursor: page)
+        guard let url = URL(string: urlString) else { return nil }
+        return URLRequest(url: url)
+    }
+    
+    private func formatQuery(_ query: String) -> String {
+        // query string needs to be formatted by replacing " " with "+" for request URL
+        let formattedQuery = query.replacingOccurrences(of: " ", with: "+", options: .literal, range: nil)
+        return formattedQuery
+    }
+    
+    private func assembleURLString(formattedQuery: String, batchSize: Int, pageCursor: Int) -> String {
+        return apiBase
+            + "q=\(formattedQuery)&"
+            + "per_page=\(batchSize)&"
+            + "page=\(pageCursor)&"
+            + dataFormat
+            + "client_id=\(clientID)"
+    }
+    
 }

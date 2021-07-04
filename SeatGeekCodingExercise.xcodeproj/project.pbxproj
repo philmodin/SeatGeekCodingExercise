@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		8623C9E7268C110800D75093 /* SeatGeekCodingExerciseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8623C9E6268C110800D75093 /* SeatGeekCodingExerciseTests.swift */; };
+		865BEBCE2691CCB600C4AB09 /* EventsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865BEBCD2691CCB600C4AB09 /* EventsTable.swift */; };
 		8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE322687FC3500F39B0E /* EventsResponse.swift */; };
 		8699CE352688019200F39B0E /* SGRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE342688019200F39B0E /* SGRequest.swift */; };
-		8699CE372688311100F39B0E /* EventsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE362688311100F39B0E /* EventsTable.swift */; };
 		8699CE39268831BA00F39B0E /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE38268831BA00F39B0E /* Favorites.swift */; };
 		86A234EA268EA8E1009DAA57 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A234E9268EA8E1009DAA57 /* Cache.swift */; };
 		86A6CEF4268DA045004AE672 /* UIImage-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */; };
@@ -40,9 +40,9 @@
 		8623C9E4268C110800D75093 /* SeatGeekCodingExerciseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeatGeekCodingExerciseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8623C9E6268C110800D75093 /* SeatGeekCodingExerciseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeekCodingExerciseTests.swift; sourceTree = "<group>"; };
 		8623C9E8268C110800D75093 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		865BEBCD2691CCB600C4AB09 /* EventsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTable.swift; sourceTree = "<group>"; };
 		8699CE322687FC3500F39B0E /* EventsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsResponse.swift; sourceTree = "<group>"; };
 		8699CE342688019200F39B0E /* SGRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGRequest.swift; sourceTree = "<group>"; };
-		8699CE362688311100F39B0E /* EventsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTable.swift; sourceTree = "<group>"; };
 		8699CE38268831BA00F39B0E /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
 		86A234E9268EA8E1009DAA57 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage-Ext.swift"; sourceTree = "<group>"; };
@@ -90,7 +90,7 @@
 		8699CE2E2687D0B400F39B0E /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				8699CE362688311100F39B0E /* EventsTable.swift */,
+				865BEBCD2691CCB600C4AB09 /* EventsTable.swift */,
 				86C6A4C725F8683D009F363C /* EventDetails.swift */,
 			);
 			path = Controller;
@@ -295,13 +295,13 @@
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
 				86A234EA268EA8E1009DAA57 /* Cache.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
-				8699CE372688311100F39B0E /* EventsTable.swift in Sources */,
 				8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
 				8699CE39268831BA00F39B0E /* Favorites.swift in Sources */,
 				86A6CEF6268DC920004AE672 /* Int-Ext.swift in Sources */,
 				86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */,
 				86C6A4E725F8CEE4009F363C /* EventCell.swift in Sources */,
+				865BEBCE2691CCB600C4AB09 /* EventsTable.swift in Sources */,
 				8699CE352688019200F39B0E /* SGRequest.swift in Sources */,
 				86A6CEF4268DA045004AE672 /* UIImage-Ext.swift in Sources */,
 			);
