@@ -50,7 +50,6 @@ class EventCell: UITableViewCell {
     }
     
     func displayLoading() {
-//        print("cell displayLoading")
         title.text = "_____ ___ __________ _______ _____ ___________"
         favorite.image = nil
         location.text = "__ _______"

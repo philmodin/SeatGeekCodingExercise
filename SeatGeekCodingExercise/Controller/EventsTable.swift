@@ -77,7 +77,6 @@ extension EventsTable: UITableViewDataSourcePrefetching {
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            print("requesting prefetchRowsAt \(indexPath.row)")
             guard !isCellLoaded(for: indexPath)
             else { return }
             getEvent(for: searchQuery, with: searchPriority, at: indexPath)
@@ -125,7 +124,6 @@ extension EventsTable {
     }
     
     private func getEvent(for query: String, with priority: Int, at indexPath: IndexPath) {
-        print("getEvent at \(indexPath.row)")
         SGRequest().event(for: query, at: indexPath) { [weak self] event, _ in
             DispatchQueue.main.async {
                 guard let self = self,
@@ -162,7 +160,7 @@ extension EventsTable {
     }
     
     private func reloadRowIfVisible(at indexPath: IndexPath) {
-        if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false { print("reloading at \(indexPath.row)")
+        if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
