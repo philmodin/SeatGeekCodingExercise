@@ -10,88 +10,103 @@ struct SGRequest {
     let apiBase = "https://api.seatgeek.com/2/events?"
     let resultsPerPage = 10
     let dataFormat = "format=json&"
+    var clientID = ""
+    //  clientID is secret and needs to be added to InfoSeatGeek.plist by developer; check readme for instructions
+    let errorURLRequest = "Invalid URLRequest"
+    let errorURL = "Invalid URL"
     
-    // clientID is secret and needs to be added by developer; check readme for instructions
-    var clientID: String {
-        get {
-            // check if InfoSeatGeek.plist exists
-            guard let filePath = Bundle.main.path(forResource: "InfoSeatGeek", ofType: "plist") else {
-                fatalError("Could not locate InfoSeatGeek.plist")
-            }
-            let plistFile = NSDictionary(contentsOfFile: filePath)
-            
-            // check if ClientID key exists
-            guard let value = plistFile?.object(forKey: "ClientID") as? String else {
-                fatalError("Could not read ClientID in InfoSeatGeek.plist")
-            }
-            // check if ClientID value is template, empty, or contains space; if so, halt and print instructions
-            if value.starts(with: "Paste client ID here") || value == "" || value.contains(" ") {
-                print("⚠️ SeatGeek requires a valid API client ID")
-                print("Register for a SeatGeek developer account and get an API client ID at:")
-                print("https://seatgeek.com/account/develop")
-                print("If you have an existing client ID, add it to InfoSeatGeek.plist\n")
-                fatalError()
-            }
-            return value
+    init(testing clientID: String? = nil) {
+        if let clientID = clientID {
+            self.clientID = clientID
+        } else {
+            self.clientID = getClientID()
         }
     }
     
-    func totalEvents(for query: String, completionHandler: @escaping (Int?, Error?) -> Void) {
+    private func getClientID() -> String {
+        // check if InfoSeatGeek.plist exists
+        guard let filePath = Bundle.main.path(forResource: "InfoSeatGeek", ofType: "plist") else {
+            fatalError("Could not locate InfoSeatGeek.plist")
+        }
+        let plistFile = NSDictionary(contentsOfFile: filePath)
+        
+        // check if ClientID key exists
+        guard let value = plistFile?.object(forKey: "ClientID") as? String else {
+            fatalError("Could not read ClientID in InfoSeatGeek.plist")
+        }
+        // check if ClientID value is template, empty, or contains space; if so, halt and print instructions
+        if value.starts(with: "Paste client ID here") || value == "" || value.contains(" ") {
+            print("⚠️ SeatGeek requires a valid API client ID")
+            print("Register for a SeatGeek developer account and get an API client ID at:")
+            print("https://seatgeek.com/account/develop")
+            print("If you have an existing client ID, add it to InfoSeatGeek.plist\n")
+            fatalError()
+        }
+        return value
+    }
+    
+}
+
+extension SGRequest {
+    
+    func eventsTotalCount(for query: String, completion: @escaping (Int?, Error?) -> Void) {
         guard let request = buildRequest(query: query, batchSize: 1, page: 1)
         else {
-            completionHandler(nil, nil)
+            completion(nil, errorURLRequest)
             return
         }
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            if let data = data {
-                do {
-                    let eventsResponseDecoded = try JSONDecoder().decode(EventsResponse.self, from: data)
-                    completionHandler(eventsResponseDecoded.meta.total, nil)
-                } catch {
-                    completionHandler(nil, error)
-                }
-            } else if let error = error {
-                completionHandler(nil, error)
-            }
-        }.resume()
+        getEventsResponse(for: request) { eventsResponse, error in
+            completion(eventsResponse?.meta.total, error)
+        }
     }
     
-    func event(for query: String, at indexPath: IndexPath, completionHandler: @escaping (EventsResponse.Event?, Error?) -> Void) {
+    func event(for query: String, at indexPath: IndexPath, completion: @escaping (EventsResponse.Event?, Error?) -> Void) {
         guard let request = buildRequest(query: query, batchSize: 1, page: indexPath.row + 1)
         else {
-            completionHandler(nil, nil)
+            completion(nil, errorURLRequest)
             return
         }
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            if let data = data {
-                do {
-                    let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
-                    completionHandler(eventsResponse.events.first, nil)
-                } catch {
-                    completionHandler(nil, error)
-                }
-            } else if let error = error {
-                completionHandler(nil, error)
-            }
-        }.resume()
+        getEventsResponse(for: request) { eventsResponse, error in
+            completion(eventsResponse?.events.first, error)
+        }
     }
     
-    func thumbnail(for event: EventsResponse.Event, completionHandler: @escaping (Data?, Error?) -> Void) {
+    func thumbnail(for event: EventsResponse.Event, completion: @escaping (Data?, Error?) -> Void) {
         
-        // check for image URL
         guard let requestURL = event.performers[0]?.imageURL else {
-            completionHandler(nil, nil)
+            completion(nil, errorURL)
             return
         }
         
         let request = URLRequest(url: requestURL)
         
-        // perform the URL request
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            // return the data even if it's nil
-            completionHandler(data, error)
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            completion(data, error)
         }.resume()
     }
+    
+}
+
+extension SGRequest {
+    
+    private func getEventsResponse(for request: URLRequest, completion: @escaping (EventsResponse?, Error?) -> Void) {
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data {
+                do {
+                    if let statusResponseDecoded = try? JSONDecoder().decode(StatusResponse.self, from: data) {
+                        throw statusResponseDecoded.message
+                    }
+                    let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
+                    completion(eventsResponse, nil)
+                } catch {
+                    completion(nil, error)
+                }
+            } else {
+                completion(nil, error)
+            }
+        }.resume()
+    }
+    
 }
 
 extension SGRequest {

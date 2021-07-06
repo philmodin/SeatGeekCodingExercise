@@ -17,9 +17,8 @@ struct Favorites {
     func isFavorite(_ id: Int) -> Bool {
         if ((defaults.object(forKey: favoritesKey) as? [Int])?.contains(id) ?? false) {
             return true
-        } else {
-            return false
         }
+        return false
     }
     
     // add or remove event id from user defaults

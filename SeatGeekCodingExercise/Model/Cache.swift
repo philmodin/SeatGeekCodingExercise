@@ -20,9 +20,9 @@ class Cache {
                 SGRequest().thumbnail(for: event) { data, error in
                     DispatchQueue.main.async {
                         if let data = data, let image = UIImage(data: data) {
-                            self.thumbnails.merge([event.id : image]) { _, new in new }
+                            self.thumbnails.merge([event.id : image]) { current, new in new }
                         } else {
-                            self.thumbnails.merge([event.id : self.placeholder]) { current, _ in current }
+                            self.thumbnails.merge([event.id : self.placeholder]) { current, new in new }
                         }
                         completionHandler(true, error)
                     }

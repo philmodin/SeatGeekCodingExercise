@@ -99,8 +99,8 @@ struct EventsResponse: Codable {
         let page: Int
     }
     
-    static let sampleEvent = Event(
-        id: 5052055,
+    static let sampleEventPass = Event(
+        id: 1,
         title: "UEFA Euro Cup Quarterfinals: QF1",
         short_title: "UEFA Euro Cup Quarterfinals: QF1",
         datetime_local: "2021-07-02T03:30:00",
@@ -116,6 +116,31 @@ struct EventsResponse: Codable {
         performers: [Event.Performer(
                         id: 37452,
                         image: "https://seatgeek.com/images/performers-landscape/generic-soccer-4e2b58/677196/32408/huge.jpg",
+                        taxonomies: []
+        )],
+        stats: EventsResponse.Event.Stats(
+            lowest_price: 177,
+            highest_price: 218
+        )
+    )
+    
+    static let sampleEventFail = Event(
+        id: 0,
+        title: "UEFA Euro Cup Quarterfinals: QF1",
+        short_title: "UEFA Euro Cup Quarterfinals: QF1",
+        datetime_local: "Invalid",
+        url: "Invalid UrL",
+        venue: Event.Venue(
+            id: 419762,
+            name: "Krestovsky Stadium",
+            state: nil,
+            city: "Saint Petersburg",
+            display_location: "Saint Petersburg, Russia",
+            location: Event.Venue.Location(lat: 59.9711, lon: 30.245)
+        ),
+        performers: [Event.Performer(
+                        id: 37452,
+                        image: nil,
                         taxonomies: []
         )],
         stats: EventsResponse.Event.Stats(

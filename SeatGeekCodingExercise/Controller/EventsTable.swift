@@ -11,7 +11,8 @@ class EventsTable: UITableViewController {
 
     var eventsTotal = 0
     var eventsNEW = [Int: EventsResponse.Event]()
-    var cache = Cache()
+    let cache = Cache()
+    let sgrequest = SGRequest()
     
     var searchController : UISearchController!
     var searchQuery = ""
@@ -62,11 +63,6 @@ extension EventsTable: UISearchResultsUpdating, UISearchBarDelegate, UISearchCon
         if text != searchQuery, reachability?.connection != .unavailable {
             searchQuery = text
             searchPriority += 1
-//            tableView.isScrollEnabled = false
-//            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-//            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-//            tableView.setContentOffset(tableView.contentOffset, animated: false)
-//            tableView.isScrollEnabled = true
             getEventsTotal(for: searchQuery, with: searchPriority)
         }
     }
@@ -95,7 +91,7 @@ extension EventsTable {
         reloadEntireTable()
         tableView.isScrollEnabled = true
         
-        SGRequest().totalEvents(for: query) { [weak self] totalEvents, _ in
+        sgrequest.eventsTotalCount(for: query) { [weak self] totalEvents, _ in
             DispatchQueue.main.async {
                 guard let self = self,
                       query == self.searchQuery,
@@ -124,7 +120,7 @@ extension EventsTable {
     }
     
     private func getEvent(for query: String, with priority: Int, at indexPath: IndexPath) {
-        SGRequest().event(for: query, at: indexPath) { [weak self] event, _ in
+        sgrequest.event(for: query, at: indexPath) { [weak self] event, _ in
             DispatchQueue.main.async {
                 guard let self = self,
                       query == self.searchQuery,
@@ -143,7 +139,8 @@ extension EventsTable {
             DispatchQueue.main.async {
                 guard let self = self,
                       query == self.searchQuery,
-                      priority == self.searchPriority, mergedNewImage
+                      priority == self.searchPriority,
+                      mergedNewImage
                 else { return }
                 
                 self.reloadRowIfVisible(at: indexPath)
@@ -285,7 +282,7 @@ extension EventsTable {
     }
     
     private func reachabilityStart() {
-        reachability = try? Reachability(hostname: SGRequest().host)
+        reachability = try? Reachability(hostname: sgrequest.host)
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)), name: .reachabilityChanged, object: reachability)
         do {
             try reachability?.startNotifier()

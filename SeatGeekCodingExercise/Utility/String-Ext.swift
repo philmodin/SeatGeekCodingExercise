@@ -1,16 +1,12 @@
 //
-//  Double-Ext.swift
+//  String-Ext.swift
 //  SeatGeekCodingExercise
 //
-//  Created by endOfLine on 7/1/21.
+//  Created by endOfLine on 7/5/21.
 //
 
 import Foundation
 
-extension Double {
-    init(decimal: Double) {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let eventsCount = (numberFormatter.string(from: NSNumber(value: eventsTotal)) ?? "0")
-    }
+extension String: LocalizedError {
+    public var errorDescription: String? { return self }
 }

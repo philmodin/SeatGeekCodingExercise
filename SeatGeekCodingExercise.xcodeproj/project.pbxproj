@@ -24,6 +24,8 @@
 		86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
 		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
+		86E6E4C32692EFD000409457 /* StatusResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E6E4C22692EFD000409457 /* StatusResponse.swift */; };
+		86E6E4C52692F2F700409457 /* String-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E6E4C42692F2F700409457 /* String-Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +60,8 @@
 		86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor-Ext.swift"; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
+		86E6E4C22692EFD000409457 /* StatusResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusResponse.swift; sourceTree = "<group>"; };
+		86E6E4C42692F2F700409457 /* String-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String-Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +113,9 @@
 		8699CE302687D0E500F39B0E /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8699CE322687FC3500F39B0E /* EventsResponse.swift */,
 				86A234E9268EA8E1009DAA57 /* Cache.swift */,
+				8699CE322687FC3500F39B0E /* EventsResponse.swift */,
+				86E6E4C22692EFD000409457 /* StatusResponse.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -118,12 +123,13 @@
 		8699CE312687D0EC00F39B0E /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				8699CE38268831BA00F39B0E /* Favorites.swift */,
 				86A6CEF5268DC920004AE672 /* Int-Ext.swift */,
-				86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */,
-				86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */,
 				86C6A4F9260081BB009F363C /* Reachability.swift */,
 				8699CE342688019200F39B0E /* SGRequest.swift */,
-				8699CE38268831BA00F39B0E /* Favorites.swift */,
+				86E6E4C42692F2F700409457 /* String-Ext.swift */,
+				86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */,
+				86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -298,10 +304,12 @@
 				8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
 				8699CE39268831BA00F39B0E /* Favorites.swift in Sources */,
+				86E6E4C52692F2F700409457 /* String-Ext.swift in Sources */,
 				86A6CEF6268DC920004AE672 /* Int-Ext.swift in Sources */,
 				86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */,
 				86C6A4E725F8CEE4009F363C /* EventCell.swift in Sources */,
 				865BEBCE2691CCB600C4AB09 /* EventsTable.swift in Sources */,
+				86E6E4C32692EFD000409457 /* StatusResponse.swift in Sources */,
 				8699CE352688019200F39B0E /* SGRequest.swift in Sources */,
 				86A6CEF4268DA045004AE672 /* UIImage-Ext.swift in Sources */,
 			);
