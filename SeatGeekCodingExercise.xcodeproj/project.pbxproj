@@ -7,20 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8623C9E7268C110800D75093 /* SeatGeekCodingExerciseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8623C9E6268C110800D75093 /* SeatGeekCodingExerciseTests.swift */; };
+		865BEBCE2691CCB600C4AB09 /* EventsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865BEBCD2691CCB600C4AB09 /* EventsTable.swift */; };
+		8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE322687FC3500F39B0E /* EventsResponse.swift */; };
+		8699CE352688019200F39B0E /* SGRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE342688019200F39B0E /* SGRequest.swift */; };
+		8699CE39268831BA00F39B0E /* Favorites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8699CE38268831BA00F39B0E /* Favorites.swift */; };
+		86A234EA268EA8E1009DAA57 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A234E9268EA8E1009DAA57 /* Cache.swift */; };
+		86A6CEF4268DA045004AE672 /* UIImage-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */; };
+		86A6CEF6268DC920004AE672 /* Int-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A6CEF5268DC920004AE672 /* Int-Ext.swift */; };
 		86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4C325F8683D009F363C /* AppDelegate.swift */; };
 		86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4C725F8683D009F363C /* EventDetails.swift */; };
 		86C6A4CB25F8683D009F363C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4C925F8683D009F363C /* Main.storyboard */; };
 		86C6A4CD25F8683E009F363C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CC25F8683E009F363C /* Assets.xcassets */; };
 		86C6A4D025F8683E009F363C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */; };
-		86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4DB25F86A47009F363C /* HomeTable.swift */; };
-		86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E125F873A6009F363C /* SeatGeek.swift */; };
-		86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* HomeCell.swift */; };
-		86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* ExtUIColor.swift */; };
+		86C6A4E725F8CEE4009F363C /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4E625F8CEE4009F363C /* EventCell.swift */; };
+		86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */; };
 		86C6A4FA260081BB009F363C /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C6A4F9260081BB009F363C /* Reachability.swift */; };
 		86C6A51326031D59009F363C /* InfoSeatGeek.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86C6A51226031D59009F363C /* InfoSeatGeek.plist */; };
+		86E6E4C32692EFD000409457 /* StatusResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E6E4C22692EFD000409457 /* StatusResponse.swift */; };
+		86E6E4C52692F2F700409457 /* String-Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E6E4C42692F2F700409457 /* String-Ext.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8623C9E9268C110800D75093 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86C6A4B825F8683D009F363C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 86C6A4BF25F8683D009F363C;
+			remoteInfo = SeatGeekCodingExercise;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		8623C9E4268C110800D75093 /* SeatGeekCodingExerciseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeatGeekCodingExerciseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8623C9E6268C110800D75093 /* SeatGeekCodingExerciseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeekCodingExerciseTests.swift; sourceTree = "<group>"; };
+		8623C9E8268C110800D75093 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		865BEBCD2691CCB600C4AB09 /* EventsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTable.swift; sourceTree = "<group>"; };
+		8699CE322687FC3500F39B0E /* EventsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsResponse.swift; sourceTree = "<group>"; };
+		8699CE342688019200F39B0E /* SGRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGRequest.swift; sourceTree = "<group>"; };
+		8699CE38268831BA00F39B0E /* Favorites.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorites.swift; sourceTree = "<group>"; };
+		86A234E9268EA8E1009DAA57 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage-Ext.swift"; sourceTree = "<group>"; };
+		86A6CEF5268DC920004AE672 /* Int-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int-Ext.swift"; sourceTree = "<group>"; };
 		86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeatGeekCodingExercise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C6A4C325F8683D009F363C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86C6A4C725F8683D009F363C /* EventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetails.swift; sourceTree = "<group>"; };
@@ -28,15 +56,22 @@
 		86C6A4CC25F8683E009F363C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86C6A4CF25F8683E009F363C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		86C6A4D125F8683E009F363C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		86C6A4DB25F86A47009F363C /* HomeTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTable.swift; sourceTree = "<group>"; };
-		86C6A4E125F873A6009F363C /* SeatGeek.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeek.swift; sourceTree = "<group>"; };
-		86C6A4E625F8CEE4009F363C /* HomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
-		86C6A4EF25F9A500009F363C /* ExtUIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtUIColor.swift; sourceTree = "<group>"; };
+		86C6A4E625F8CEE4009F363C /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
+		86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor-Ext.swift"; sourceTree = "<group>"; };
 		86C6A4F9260081BB009F363C /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		86C6A51226031D59009F363C /* InfoSeatGeek.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InfoSeatGeek.plist; sourceTree = "<group>"; };
+		86E6E4C22692EFD000409457 /* StatusResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusResponse.swift; sourceTree = "<group>"; };
+		86E6E4C42692F2F700409457 /* String-Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String-Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8623C9E1268C110800D75093 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86C6A4BD25F8683D009F363C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -47,10 +82,63 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8623C9E5268C110800D75093 /* SeatGeekCodingExerciseTests */ = {
+			isa = PBXGroup;
+			children = (
+				8623C9E6268C110800D75093 /* SeatGeekCodingExerciseTests.swift */,
+				8623C9E8268C110800D75093 /* Info.plist */,
+			);
+			path = SeatGeekCodingExerciseTests;
+			sourceTree = "<group>";
+		};
+		8699CE2E2687D0B400F39B0E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				865BEBCD2691CCB600C4AB09 /* EventsTable.swift */,
+				86C6A4C725F8683D009F363C /* EventDetails.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		8699CE2F2687D0CD00F39B0E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
+				86C6A4C925F8683D009F363C /* Main.storyboard */,
+				86C6A4E625F8CEE4009F363C /* EventCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8699CE302687D0E500F39B0E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				86A234E9268EA8E1009DAA57 /* Cache.swift */,
+				8699CE322687FC3500F39B0E /* EventsResponse.swift */,
+				86E6E4C22692EFD000409457 /* StatusResponse.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8699CE312687D0EC00F39B0E /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				8699CE38268831BA00F39B0E /* Favorites.swift */,
+				86A6CEF5268DC920004AE672 /* Int-Ext.swift */,
+				86C6A4F9260081BB009F363C /* Reachability.swift */,
+				8699CE342688019200F39B0E /* SGRequest.swift */,
+				86E6E4C42692F2F700409457 /* String-Ext.swift */,
+				86C6A4EF25F9A500009F363C /* UIColor-Ext.swift */,
+				86A6CEF3268DA045004AE672 /* UIImage-Ext.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		86C6A4B725F8683D009F363C = {
 			isa = PBXGroup;
 			children = (
 				86C6A4C225F8683D009F363C /* SeatGeekCodingExercise */,
+				8623C9E5268C110800D75093 /* SeatGeekCodingExerciseTests */,
 				86C6A4C125F8683D009F363C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				86C6A4C025F8683D009F363C /* SeatGeekCodingExercise.app */,
+				8623C9E4268C110800D75093 /* SeatGeekCodingExerciseTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,15 +156,11 @@
 			isa = PBXGroup;
 			children = (
 				86C6A4C325F8683D009F363C /* AppDelegate.swift */,
-				86C6A4C725F8683D009F363C /* EventDetails.swift */,
-				86C6A4EF25F9A500009F363C /* ExtUIColor.swift */,
-				86C6A4E625F8CEE4009F363C /* HomeCell.swift */,
-				86C6A4DB25F86A47009F363C /* HomeTable.swift */,
-				86C6A4F9260081BB009F363C /* Reachability.swift */,
-				86C6A4E125F873A6009F363C /* SeatGeek.swift */,
+				8699CE302687D0E500F39B0E /* Model */,
+				8699CE2F2687D0CD00F39B0E /* View */,
+				8699CE2E2687D0B400F39B0E /* Controller */,
+				8699CE312687D0EC00F39B0E /* Utility */,
 				86C6A4CC25F8683E009F363C /* Assets.xcassets */,
-				86C6A4C925F8683D009F363C /* Main.storyboard */,
-				86C6A4CE25F8683E009F363C /* LaunchScreen.storyboard */,
 				86C6A4D125F8683E009F363C /* Info.plist */,
 				86C6A51226031D59009F363C /* InfoSeatGeek.plist */,
 			);
@@ -85,6 +170,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8623C9E3268C110800D75093 /* SeatGeekCodingExerciseTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8623C9EB268C110800D75093 /* Build configuration list for PBXNativeTarget "SeatGeekCodingExerciseTests" */;
+			buildPhases = (
+				8623C9E0268C110800D75093 /* Sources */,
+				8623C9E1268C110800D75093 /* Frameworks */,
+				8623C9E2268C110800D75093 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8623C9EA268C110800D75093 /* PBXTargetDependency */,
+			);
+			name = SeatGeekCodingExerciseTests;
+			productName = SeatGeekCodingExerciseTests;
+			productReference = 8623C9E4268C110800D75093 /* SeatGeekCodingExerciseTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		86C6A4BF25F8683D009F363C /* SeatGeekCodingExercise */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 86C6A4D425F8683E009F363C /* Build configuration list for PBXNativeTarget "SeatGeekCodingExercise" */;
@@ -109,9 +212,13 @@
 		86C6A4B825F8683D009F363C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
+					8623C9E3268C110800D75093 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 86C6A4BF25F8683D009F363C;
+					};
 					86C6A4BF25F8683D009F363C = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -131,11 +238,19 @@
 			projectRoot = "";
 			targets = (
 				86C6A4BF25F8683D009F363C /* SeatGeekCodingExercise */,
+				8623C9E3268C110800D75093 /* SeatGeekCodingExerciseTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8623C9E2268C110800D75093 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86C6A4BE25F8683D009F363C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -171,21 +286,44 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8623C9E0268C110800D75093 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8623C9E7268C110800D75093 /* SeatGeekCodingExerciseTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		86C6A4BC25F8683D009F363C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				86C6A4FA260081BB009F363C /* Reachability.swift in Sources */,
+				86A234EA268EA8E1009DAA57 /* Cache.swift in Sources */,
 				86C6A4C825F8683D009F363C /* EventDetails.swift in Sources */,
-				86C6A4E225F873A6009F363C /* SeatGeek.swift in Sources */,
+				8699CE332687FC3500F39B0E /* EventsResponse.swift in Sources */,
 				86C6A4C425F8683D009F363C /* AppDelegate.swift in Sources */,
-				86C6A4F025F9A500009F363C /* ExtUIColor.swift in Sources */,
-				86C6A4E725F8CEE4009F363C /* HomeCell.swift in Sources */,
-				86C6A4DC25F86A47009F363C /* HomeTable.swift in Sources */,
+				8699CE39268831BA00F39B0E /* Favorites.swift in Sources */,
+				86E6E4C52692F2F700409457 /* String-Ext.swift in Sources */,
+				86A6CEF6268DC920004AE672 /* Int-Ext.swift in Sources */,
+				86C6A4F025F9A500009F363C /* UIColor-Ext.swift in Sources */,
+				86C6A4E725F8CEE4009F363C /* EventCell.swift in Sources */,
+				865BEBCE2691CCB600C4AB09 /* EventsTable.swift in Sources */,
+				86E6E4C32692EFD000409457 /* StatusResponse.swift in Sources */,
+				8699CE352688019200F39B0E /* SGRequest.swift in Sources */,
+				86A6CEF4268DA045004AE672 /* UIImage-Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8623C9EA268C110800D75093 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 86C6A4BF25F8683D009F363C /* SeatGeekCodingExercise */;
+			targetProxy = 8623C9E9268C110800D75093 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		86C6A4C925F8683D009F363C /* Main.storyboard */ = {
@@ -207,6 +345,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8623C9EC268C110800D75093 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L5X28646AN;
+				INFOPLIST_FILE = SeatGeekCodingExerciseTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.SeatGeekCodingExerciseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SeatGeekCodingExercise.app/SeatGeekCodingExercise";
+			};
+			name = Debug;
+		};
+		8623C9ED268C110800D75093 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L5X28646AN;
+				INFOPLIST_FILE = SeatGeekCodingExerciseTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.phil.training.SeatGeekCodingExerciseTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SeatGeekCodingExercise.app/SeatGeekCodingExercise";
+			};
+			name = Release;
+		};
 		86C6A4D225F8683E009F363C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -366,6 +546,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8623C9EB268C110800D75093 /* Build configuration list for PBXNativeTarget "SeatGeekCodingExerciseTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8623C9EC268C110800D75093 /* Debug */,
+				8623C9ED268C110800D75093 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		86C6A4BB25F8683D009F363C /* Build configuration list for PBXProject "SeatGeekCodingExercise" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
