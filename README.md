@@ -2,12 +2,12 @@
 <img src="SeatGeekFavorite.gif" alt="SeatGeekFavorite" height="619" />
 
 ---
-## Requirements 
+## Requirements
 
 - [x] Write your application for Native iOS Platform preferably with Swift **(used Storyboards and UIKit)**
 - [x] Favorited events are persisted between app launches **(used UserDefaults)**
 - [x] Events are searchable through SeatGeek API **(see known issues)**
-- [ ] Unit tests are preferable **(haven't taught myself unit testing yet but found [this](https://www.hackingwithswift.com/articles/94/how-to-refactor-your-app-to-add-unit-tests) resource to start)**
+- [x] Unit tests are preferable **(about 70% coverage)**
 - [x] Third party libraries are allowed **(used Reachability by ashleymills, no CocoaPods for install simplicity)**
 - [x] Make sure that the application supports iOS 12 and above **(tested on simulator iPhone X iOS 12.1)**
 - [x] The application must compile with Xcode 12.x.x **(used Xcode 12.4)**
@@ -27,7 +27,6 @@
 ---
 ## Known issues
 
-- Massive view controllers **(found [this](https://www.hackingwithswift.com/articles/159/how-to-refactor-massive-view-controllers) resource to start)**.
 - Testing internet reconnection does not work on simulator. See GitHub [issue](https://github.com/ashleymills/Reachability.swift/issues/151).
 - Searching events using the `q` arguement produces unexpected results. For example searching "ba" returns less events than "bas" See GitHub [issue](https://github.com/seatgeek/api-support/issues/65).
 <img src="SeatGeekSearch.gif" alt="SeatGeekSearch" height="619" />
