@@ -5,13 +5,22 @@
 ## Requirements
 
 - [x] Write your application for Native iOS Platform preferably with Swift **(used Storyboards and UIKit)**
+
 - [x] Favorited events are persisted between app launches **(used UserDefaults)**
+
 - [x] Events are searchable through SeatGeek API **(see known issues)**
+
 - [x] Unit tests are preferable **(about 70% coverage)**
+
 - [x] Third party libraries are allowed **(used Reachability by ashleymills, no CocoaPods for install simplicity)**
+
 - [x] Make sure that the application supports iOS 12 and above **(tested on simulator iPhone X iOS 12.1)**
+
 - [x] The application must compile with Xcode 12.x.x **(used Xcode 12.4)**
+
 - [x] Please add a README or equivalent documentation about your project
+
+  [Full requirements document](SeatGeekCodingExercise.pdf)
 
 ---
 ## Installation
