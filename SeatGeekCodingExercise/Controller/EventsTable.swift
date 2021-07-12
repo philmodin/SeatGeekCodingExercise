@@ -37,7 +37,7 @@ class EventsTable: UITableViewController {
     }
 }
 
-// MARK: - Search
+// MARK: - Search (as you type)
 extension EventsTable: UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
     
     private func configureSearchBar() {
@@ -68,7 +68,7 @@ extension EventsTable: UISearchResultsUpdating, UISearchBarDelegate, UISearchCon
     }
 }
 
-// MARK: - Prefetch
+// MARK: - Prefetch (for Infinite Scrolling)
 extension EventsTable: UITableViewDataSourcePrefetching {
     
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -91,14 +91,16 @@ extension EventsTable {
         reloadEntireTable()
         tableView.isScrollEnabled = true
         
-        sgrequest.eventsTotalCount(for: query) { [weak self] totalEvents, _ in
-            DispatchQueue.main.async {
-                guard let self = self,
-                      query == self.searchQuery,
-                      priority == self.searchPriority
-                else { return }
-                
-                self.eventsTotal = totalEvents ?? 0
+        sgrequest.eventsTotalCount(for: query) { [weak self] result in
+            guard let self = self,
+                  query == self.searchQuery,
+                  priority == self.searchPriority
+            else { return }
+            
+            switch result {
+            case .failure(_): return
+            case .success(let totalEvents):
+                self.eventsTotal = totalEvents
                 self.isLoading = false
                 self.reloadEntireTable()
                 self.getEventsInitial(for: query, with: priority)
@@ -107,12 +109,8 @@ extension EventsTable {
     }
     
     private func getEventsInitial(for query: String, with priority: Int) {
-        DispatchQueue.main.async {
-            var rowCount = 10
-            if let visibleRows = self.tableView.indexPathsForVisibleRows, visibleRows.count > rowCount {
-                rowCount = visibleRows.count
-            }
-            let initialRows = (0..<rowCount).map { IndexPath(row: $0, section: 0) }
+        if let visibleRows = self.tableView.indexPathsForVisibleRows {
+            let initialRows = (0..<visibleRows.count).map { IndexPath(row: $0, section: 0) }
             for indexPath in initialRows {
                 self.getEvent(for: query, with: priority, at: indexPath)
             }
@@ -120,14 +118,15 @@ extension EventsTable {
     }
     
     private func getEvent(for query: String, with priority: Int, at indexPath: IndexPath) {
-        sgrequest.event(for: query, at: indexPath) { [weak self] event, _ in
-            DispatchQueue.main.async {
-                guard let self = self,
-                      query == self.searchQuery,
-                      priority == self.searchPriority,
-                      let event = event
-                else { return }
-                
+        sgrequest.event(for: query, at: indexPath) { [weak self] result in
+            guard let self = self,
+                  query == self.searchQuery,
+                  priority == self.searchPriority
+            else { return }
+            
+            switch result {
+            case .failure(_): return
+            case .success(let event):
                 self.reloadRowIfVisible(at: indexPath, for: event)
                 self.getThumbnail(for: query, with: priority, at: indexPath, for: event)
             }
@@ -135,12 +134,14 @@ extension EventsTable {
     }
     
     private func getThumbnail(for query: String, with priority: Int, at indexPath: IndexPath, for event: EventsResponse.Event) {
-        cache.thumbnail(for: event) { [weak self] mergedNewImage, _ in
-            DispatchQueue.main.async {
+        cache.thumbnail(for: event) { [weak self] result in
+            switch result {
+            case.failure(_): return
+            case.success(let didMergeImage):
                 guard let self = self,
                       query == self.searchQuery,
                       priority == self.searchPriority,
-                      mergedNewImage
+                      didMergeImage
                 else { return }
                 
                 self.reloadRowIfVisible(at: indexPath)
@@ -163,14 +164,10 @@ extension EventsTable {
     }
     
     private func reloadRowIfVisible(at indexPath: IndexPath, for event: EventsResponse.Event) {
-        DispatchQueue.main.async {
-            if !self.isCellLoaded(for: indexPath) {
-                self.eventsNEW.merge([indexPath.row : event]) { _, new in new }
-                if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                    //Thread 1: "attempt to insert row 0 into section 0, but there are only 0 rows in section 0 after the update"
-                    //searching Vegas, then Water. Ends at W-a
-                }
+        if !self.isCellLoaded(for: indexPath) {
+            self.eventsNEW.merge([indexPath.row : event]) { _, new in new }
+            if self.tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
             }
         }
     }
