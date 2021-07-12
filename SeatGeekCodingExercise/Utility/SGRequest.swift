@@ -10,10 +10,12 @@ struct SGRequest {
     let apiBase = "https://api.seatgeek.com/2/events?"
     let resultsPerPage = 10
     let dataFormat = "format=json&"
+    
+    //  clientID is secret and needs to be added to InfoSeatGeek.plist by each developer; check readme for instructions
     var clientID = ""
-    //  clientID is secret and needs to be added to InfoSeatGeek.plist by developer; check readme for instructions
-    let errorURLRequest = "Invalid URLRequest"
+    
     let errorURL = "Invalid URL"
+    let errorUnknown = "Unknown error"
     
     init(testing clientID: String? = nil) {
         if let clientID = clientID {
@@ -49,60 +51,51 @@ struct SGRequest {
 
 extension SGRequest {
     
-    func eventsTotalCount(for query: String, completion: @escaping (Int?, Error?) -> Void) {
-        guard let request = buildRequest(query: query, batchSize: 1, page: 1)
+    func eventsTotalCount(for query: String, completion: @escaping (Result<Int, Error>) -> Void) {
+        
+        guard let url = buildURL(query: query, page: 1)
         else {
-            completion(nil, errorURLRequest)
+            completion(.failure(errorURL))
             return
         }
-        getEventsResponse(for: request) { eventsResponse, error in
-            completion(eventsResponse?.meta.total, error)
+        getEventsResponse(for: url) { result in
+            switch result {
+            case .success(let eventsResponse):
+                completion(.success(eventsResponse.meta.total))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
-    func event(for query: String, at indexPath: IndexPath, completion: @escaping (EventsResponse.Event?, Error?) -> Void) {
-        guard let request = buildRequest(query: query, batchSize: 1, page: indexPath.row + 1)
+    func event(for query: String, at indexPath: IndexPath, completion: @escaping (Result<EventsResponse.Event, Error>) -> Void) {
+        guard let url = buildURL(query: query, page: indexPath.row + 1)
         else {
-            completion(nil, errorURLRequest)
+            completion(.failure(errorURL))
             return
         }
-        getEventsResponse(for: request) { eventsResponse, error in
-            completion(eventsResponse?.events.first, error)
+        getEventsResponse(for: url) { result in
+            switch result {
+            case .success(let eventsResponse) :
+                completion(.success(eventsResponse.events.first!))
+            case .failure(let error):
+                completion(.failure(error))
+            }            
         }
     }
     
-    func thumbnail(for event: EventsResponse.Event, completion: @escaping (Data?, Error?) -> Void) {
+    func thumbnail(for event: EventsResponse.Event, completion: @escaping (Result<Data, Error>) -> Void) {
         
-        guard let requestURL = event.performers[0]?.imageURL else {
-            completion(nil, errorURL)
+        guard let url = event.performers[0]?.imageURL else {
+            completion(.failure(errorURL))
             return
         }
-        
-        let request = URLRequest(url: requestURL)
-        
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            completion(data, error)
-        }.resume()
-    }
-    
-}
-
-extension SGRequest {
-    
-    private func getEventsResponse(for request: URLRequest, completion: @escaping (EventsResponse?, Error?) -> Void) {
-        URLSession.shared.dataTask(with: request) { data, _, error in
+                
+        URLSession.shared.dataTask(with: url) { data, _, error in
             if let data = data {
-                do {
-                    if let statusResponseDecoded = try? JSONDecoder().decode(StatusResponse.self, from: data) {
-                        throw statusResponseDecoded.message
-                    }
-                    let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
-                    completion(eventsResponse, nil)
-                } catch {
-                    completion(nil, error)
-                }
+                completion(.success(data))
             } else {
-                completion(nil, error)
+                completion(.failure(error ?? errorUnknown))
             }
         }.resume()
     }
@@ -111,11 +104,32 @@ extension SGRequest {
 
 extension SGRequest {
     
-    private func buildRequest(query: String, batchSize: Int, page: Int) -> URLRequest? {
+    private func getEventsResponse(for url: URL, completion: @escaping (Result<EventsResponse, Error>) -> Void) {
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data {
+                do {
+                    if let statusResponseDecoded = try? JSONDecoder().decode(StatusResponse.self, from: data) {
+                        throw statusResponseDecoded.message
+                    }
+                    let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
+                    completion(.success(eventsResponse))
+                } catch {
+                    completion(.failure(error))
+                }
+            } else {
+                completion(.failure(error ?? errorUnknown))
+            }
+        }.resume()
+    }
+    
+}
+
+extension SGRequest {
+    
+    private func buildURL(query: String, page: Int) -> URL? {
         let formattedQuery = formatQuery(query)
-        let urlString = assembleURLString(formattedQuery: formattedQuery, batchSize: batchSize, pageCursor: page)
-        guard let url = URL(string: urlString) else { return nil }
-        return URLRequest(url: url)
+        let urlString = assembleURLString(formattedQuery: formattedQuery, pageCursor: page)
+        return  URL(string: urlString)
     }
     
     private func formatQuery(_ query: String) -> String {
@@ -124,7 +138,7 @@ extension SGRequest {
         return formattedQuery
     }
     
-    private func assembleURLString(formattedQuery: String, batchSize: Int, pageCursor: Int) -> String {
+    private func assembleURLString(formattedQuery: String, batchSize: Int = 1, pageCursor: Int) -> String {
         return apiBase
             + "q=\(formattedQuery)&"
             + "per_page=\(batchSize)&"

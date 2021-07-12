@@ -46,16 +46,25 @@ class SeatGeekCodingExerciseTests: XCTestCase {
         let expectEvent = expectation(description: "expect event")
         let expectThumbnail = expectation(description: "expect thumbnail")
         
-        sgRequester.eventsTotalCount(for: "") { totalEvents, error in
-            XCTAssertEqual(error?.localizedDescription, sgRequester.errorURLRequest)
+        sgRequester.eventsTotalCount(for: "") { result in
+            switch result {
+            case.failure(let error): XCTAssertEqual(error.localizedDescription, sgRequester.errorURL)
+            case.success(_): XCTFail("Expecting a URL error here.")
+            }
             expectEventsTotalCount.fulfill()
         }
-        sgRequester.event(for: "", at: IndexPath(row: 0, section: 0)) { event, error in
-            XCTAssertEqual(error?.localizedDescription, sgRequester.errorURLRequest)
+        sgRequester.event(for: "", at: IndexPath(row: 0, section: 0)) { result in
+            switch result {
+            case.failure(let error): XCTAssertEqual(error.localizedDescription, sgRequester.errorURL)
+            case.success(_): XCTFail("Expecting a URL error here.")
+            }
             expectEvent.fulfill()
         }
-        sgRequester.thumbnail(for: EventsResponse.sampleEventFail) { data, error in
-            XCTAssertEqual(error?.localizedDescription, sgRequester.errorURL)
+        sgRequester.thumbnail(for: EventsResponse.sampleEventFail) { result in
+            switch result {
+            case.failure(let error): XCTAssertEqual(error.localizedDescription, sgRequester.errorURL)
+            case.success(_): XCTFail("Expecting a URL error here.")
+            }
             expectThumbnail.fulfill()
         }
         waitForExpectations(timeout: 5)
@@ -68,8 +77,11 @@ class SeatGeekCodingExerciseTests: XCTestCase {
         
         let expectError = expectation(description: "expect error")
         
-        sgRequester.eventsTotalCount(for: "") { totalEvents, error in
-            XCTAssertEqual(error?.localizedDescription, "Invalid client credentials")
+        sgRequester.eventsTotalCount(for: "") { result in
+            switch result {
+            case.failure(let error): XCTAssertEqual(error.localizedDescription, "Invalid client credentials")
+            case.success(_): XCTFail("Expecting a client ID error here.")
+            }
             expectError.fulfill()
         }
         waitForExpectations(timeout: 5)
@@ -78,10 +90,13 @@ class SeatGeekCodingExerciseTests: XCTestCase {
     func testSGMeta() {
         let expectMeta = expectation(description: "load meta")
         
-        SGRequest().eventsTotalCount(for: "") { totalEvents, error in
-            if let error = error { XCTFail(error.localizedDescription) }
-            XCTAssertNotNil(totalEvents, "Meta for total results should not be nil")
-            XCTAssert(totalEvents! > 0, "There should be at least 1 result in the meta")
+        SGRequest().eventsTotalCount(for: "") { result in
+            switch result {
+            case.failure(let error): XCTFail(error.localizedDescription)
+            case.success(let totalEvents):
+                XCTAssertNotNil(totalEvents, "Total results should not be nil")
+                XCTAssert(totalEvents > 0, "There should be at least 1 result in the response")
+            }
             expectMeta.fulfill()
         }
         waitForExpectations(timeout: 5)
@@ -90,9 +105,11 @@ class SeatGeekCodingExerciseTests: XCTestCase {
     func testSGEvent() {
         let expectEvents = expectation(description: "load event")
         
-        SGRequest().event(for: "", at: IndexPath(row: 0, section: 0)) { event, error in
-            if let error = error { XCTFail(error.localizedDescription) }
-            XCTAssertNotNil(event, "There should be an event.")
+        SGRequest().event(for: "", at: IndexPath(row: 0, section: 0)) { result in
+            switch result {
+            case.failure(let error): XCTFail(error.localizedDescription)
+            case.success(let event): XCTAssertNotNil(event, "There should be an event.")
+            }
             expectEvents.fulfill()
         }
         waitForExpectations(timeout: 5)
@@ -103,14 +120,17 @@ class SeatGeekCodingExerciseTests: XCTestCase {
         let expectQuery = expectation(description: "load query")
         let query = "basket"
         
-        SGRequest().event(for: query, at: IndexPath(row: 0, section: 0)) { event, error in
-            if let error = error { XCTFail(error.localizedDescription) }
-            let doesContainQuery = event?.performers.contains {
-                $0!.taxonomies.contains {
-                    $0!.name.contains(query)
+        SGRequest().event(for: query, at: IndexPath(row: 0, section: 0)) { result in
+            switch result {
+            case.failure(let error): XCTFail(error.localizedDescription)
+            case.success(let event):
+                let doesContainQuery = event.performers.contains {
+                    $0!.taxonomies.contains {
+                        $0!.name.contains(query)
+                    }
                 }
+                XCTAssertEqual(doesContainQuery, true, "Query should be present in first event content")
             }
-            XCTAssertEqual(doesContainQuery, true, "Query should be present in first event content")
             expectQuery.fulfill()
         }        
         waitForExpectations(timeout: 5)
@@ -119,12 +139,11 @@ class SeatGeekCodingExerciseTests: XCTestCase {
     func testSGThumbnail() {
         let expectImage = expectation(description: "load image")
         
-        SGRequest().thumbnail(for: EventsResponse.sampleEventPass) { data, error in
-            guard let data = data else {
-                XCTFail(error?.localizedDescription ?? "unknown error")
-                return
+        SGRequest().thumbnail(for: EventsResponse.sampleEventPass) { result in
+            switch result {
+            case.failure(let error): XCTFail(error.localizedDescription)
+            case.success(let data): XCTAssertNotNil(UIImage(data: data), "Loaded image should not be nil")
             }
-            XCTAssertNotNil(UIImage(data: data), "Loaded image should not be nil")
             expectImage.fulfill()
         }
         waitForExpectations(timeout: 5)
@@ -138,24 +157,33 @@ class SeatGeekCodingExerciseTests: XCTestCase {
         let expectThumbnailNoMerge = expectation(description: "expectThumbnailNoMerge")
         let expectThumbnailFail = expectation(description: "expectThumbnailFail")
         
-        cache.thumbnail(for: sampleEventPass) { mergedNewImage, error in
-            XCTAssertTrue(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should exist now")
-            XCTAssertTrue(mergedNewImage, "New image should have been merged")
-            XCTAssertNil(error, "There should be no error")
+        cache.thumbnail(for: sampleEventPass) { result in
+            switch result {
+            case.failure(let error): XCTFail(error.localizedDescription)
+            case.success(let didMergeImage):
+                XCTAssertTrue(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should exist now")
+                XCTAssertTrue(didMergeImage, "New image should have been merged")
+            }
             expectThumbnailDoMerge.fulfill()
             
-            cache.thumbnail(for: sampleEventPass) { mergedNewImage, error in
-                XCTAssertTrue(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should still exist")
-                XCTAssertFalse(mergedNewImage, "There should be no merge at this point")
-                XCTAssertNil(error, "There should be no error")
+            cache.thumbnail(for: sampleEventPass) { result in
+                switch result {
+                case.failure(let error): XCTFail(error.localizedDescription)
+                case.success(let didMergeImage):
+                    XCTAssertTrue(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should still exist")
+                    XCTAssertFalse(didMergeImage, "There should be no merge at this point")
+                }
                 expectThumbnailNoMerge.fulfill()
             }
         }
-        cache.thumbnail(for: sampleEventFail) { mergedNewImage, error in
-            XCTAssertFalse(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should not exist")
-            XCTAssertTrue(mergedNewImage, "Placeholder image should have been merged")
-            XCTAssertNotNil(error, "There should be an error")
-            XCTAssertEqual(error?.localizedDescription, SGRequest().errorURL, "Error should be Invalid URL")
+        cache.thumbnail(for: sampleEventFail) { result in
+            switch result {
+            case.failure(let error):
+                XCTAssertEqual(error.localizedDescription, SGRequest().errorURL, "Error should be Invalid URL")
+            case.success(let didMergeImage):
+                XCTAssertFalse(cache.thumbnails.keys.contains(sampleEventPass.id), "Key for thumbnail should not exist")
+                XCTAssertTrue(didMergeImage, "Placeholder image should have been merged")
+            }
             expectThumbnailFail.fulfill()
         }
         

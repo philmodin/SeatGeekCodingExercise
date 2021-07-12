@@ -91,17 +91,21 @@ extension EventsTable {
         reloadEntireTable()
         tableView.isScrollEnabled = true
         
-        sgrequest.eventsTotalCount(for: query) { [weak self] totalEvents, _ in
+        sgrequest.eventsTotalCount(for: query) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self,
                       query == self.searchQuery,
                       priority == self.searchPriority
                 else { return }
                 
-                self.eventsTotal = totalEvents ?? 0
-                self.isLoading = false
-                self.reloadEntireTable()
-                self.getEventsInitial(for: query, with: priority)
+                switch result {
+                case .failure(_): return
+                case .success(let totalEvents):
+                    self.eventsTotal = totalEvents
+                    self.isLoading = false
+                    self.reloadEntireTable()
+                    self.getEventsInitial(for: query, with: priority)
+                }
             }
         }
     }
@@ -120,27 +124,32 @@ extension EventsTable {
     }
     
     private func getEvent(for query: String, with priority: Int, at indexPath: IndexPath) {
-        sgrequest.event(for: query, at: indexPath) { [weak self] event, _ in
+        sgrequest.event(for: query, at: indexPath) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self,
                       query == self.searchQuery,
-                      priority == self.searchPriority,
-                      let event = event
+                      priority == self.searchPriority
                 else { return }
                 
-                self.reloadRowIfVisible(at: indexPath, for: event)
-                self.getThumbnail(for: query, with: priority, at: indexPath, for: event)
+                switch result {
+                case .failure(_): return
+                case .success(let event):
+                    self.reloadRowIfVisible(at: indexPath, for: event)
+                    self.getThumbnail(for: query, with: priority, at: indexPath, for: event)
+                }
             }
         }
     }
     
     private func getThumbnail(for query: String, with priority: Int, at indexPath: IndexPath, for event: EventsResponse.Event) {
-        cache.thumbnail(for: event) { [weak self] mergedNewImage, _ in
-            DispatchQueue.main.async {
+        cache.thumbnail(for: event) { [weak self] result in
+            switch result {
+            case.failure(_): return
+            case.success(let didMergeImage):
                 guard let self = self,
                       query == self.searchQuery,
                       priority == self.searchPriority,
-                      mergedNewImage
+                      didMergeImage
                 else { return }
                 
                 self.reloadRowIfVisible(at: indexPath)
