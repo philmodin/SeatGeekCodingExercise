@@ -52,7 +52,6 @@ struct SGRequest {
 extension SGRequest {
     
     func eventsTotalCount(for query: String, completion: @escaping (Result<Int, Error>) -> Void) {
-        
         guard let url = buildURL(query: query, page: 1)
         else {
             completion(.failure(errorURL))
@@ -80,7 +79,7 @@ extension SGRequest {
                 completion(.success(eventsResponse.events.first!))
             case .failure(let error):
                 completion(.failure(error))
-            }            
+            }
         }
     }
     
@@ -92,10 +91,12 @@ extension SGRequest {
         }
                 
         URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data {
-                completion(.success(data))
-            } else {
-                completion(.failure(error ?? errorUnknown))
+            DispatchQueue.main.async {
+                if let data = data {
+                    completion(.success(data))
+                } else {
+                    completion(.failure(error ?? errorUnknown))
+                }
             }
         }.resume()
     }
@@ -112,12 +113,18 @@ extension SGRequest {
                         throw statusResponseDecoded.message
                     }
                     let eventsResponse = try JSONDecoder().decode(EventsResponse.self, from: data)
-                    completion(.success(eventsResponse))
+                    DispatchQueue.main.async {
+                        completion(.success(eventsResponse))
+                    }
                 } catch {
-                    completion(.failure(error))
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
                 }
             } else {
-                completion(.failure(error ?? errorUnknown))
+                DispatchQueue.main.async {
+                    completion(.failure(error ?? errorUnknown))
+                }
             }
         }.resume()
     }

@@ -8,9 +8,6 @@
 import XCTest
 @testable import SeatGeekCodingExercise
 
-// todo:
-// disabling internet on slow connection while loading thumbnails on old method crashes app, confirm with new request method
-
 class SeatGeekCodingExerciseTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -118,7 +115,7 @@ class SeatGeekCodingExerciseTests: XCTestCase {
     func testSGSearch() {
         
         let expectQuery = expectation(description: "load query")
-        let query = "basket"
+        let query = "sports"
         
         SGRequest().event(for: query, at: IndexPath(row: 0, section: 0)) { result in
             switch result {
